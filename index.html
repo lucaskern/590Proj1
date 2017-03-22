@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title> Project 1</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+    }
+    
+    canvas {
+      padding: 0;
+      margin: 20px auto auto auto;
+      display: block;
+      border: 2px solid black;
+    }
+    
+    .controls {
+      margin: 0 auto;
+      background-color: rgba(10, 10, 10, 1);
+      width: 100%;
+      height: 50px;
+    }
+    
+    label {
+      width: 14%;
+      color: white;
+      font-family: sans-serif;
+      font-weight: 700;
+      margin: 10px 0px 20px 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas></canvas>
+  <div class="controls">
+    <label> Color Scheme
+      <select id="colorMode">
+        <option name="B&W" value="B&W"> B&W </option>
+        <option name="default" value="default"> Default </option>
+        <option name="blue" value="blue"> Blue </option>
+        <option name="orange" value="orange"> Orange </option>
+      </select>
+    </label>
+    <label> Cell Size:
+      <input id="cellSize" name="cellSize" type="range" value="12" min="3" max="15">
+      <output name="cellSizeVal" id="cellSizeVal">12</output>
+    </label>
+    <label> Cell Num: Width
+      <input id="width" type="range" value="60" min="20" max="60">
+      <output name="widthVal" id="widthVal">60</output>
+    </label>
+    <label> Cell Num: Height
+      <input id="height" name="height" type="range" value="45" min="20" max="45">
+      <output name="heightVal" id="heightVal">45</output>
+    </label>
+    <label> Display Mode
+      <select id="dispMode">
+        <option name="aesthetics" value="aesthetics"> Aesthetic </option>
+        <option name="Conway" valye="conway"> Conway </option>
+      </select>
+    </label>
+    <label> Max Cell Age
+      <input id="maxAge" type="range" value="30" min="25" max="50">
+      <output name="maxAgeVal" id="maxAgeVal">30</output>
+    </label>
+    <label> Color Change Rate
+      <input id="colorRate" type="range" value="6" min="0" max="50">
+      <output name="colorRateVal" id="colorRateVal">6</output>
+    </label>
+  </div>
+  
+  <script src='main.js'></script>
+  <script src='loader.js'></script>
+  
+  </body>
+
+</html>
