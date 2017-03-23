@@ -4,15 +4,12 @@ variable 'app' is in global scope - i.e. a property of window.
 app is our single global object literal - all other functions and properties of 
 the game will be properties of app.
 */
+
 "use strict";
 
-// if app exists use the existing copy
-// else create a new empty object literal
-var app = app || {};
+const main = require('./main.js');
 
-window.onload = function(){
-  
+window.addEventListener('load', function () {
   console.log("window.onload ran");
-  
-  app.main.init();
-}
+    let run = main.init();
+})
