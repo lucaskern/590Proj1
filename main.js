@@ -6,15 +6,15 @@ const app = {
   firstRun: true,
   accurate: false,
   frames: 100,
-  framesLimit: 3,
+  framesLimit:30,
   grid: [],
   temp: [],
-  width: 60,
-  height: 45
+  width: 20,
+  height: 20
     //size of each cell in px
 
     ,
-  cellSize: 12
+  cellSize: 40
     //max amount of times a cell can be consecutively alive before dying.
 
     ,
@@ -26,7 +26,7 @@ const app = {
     //color values for bg
 
     ,
-  colorMode: "B&W"
+  colorMode: "default"
     //color of cells
 
     ,
@@ -123,9 +123,29 @@ const app = {
     }
     //set up value controllers
 
-    ,
-  controls: function () {
+  , getMousePos: function(canvas, evt) {
+    var rect = this.canvas.getBoundingClientRect();
+    return {
+      x: Math.floor((evt.clientX - rect.left) / this.cellSize) - 1,
+      y: Math.floor((evt.clientY - rect.top) / this.cellSize) - 1
+    };
+  }
+  
+  , clickEffect: function(xCoord, yCoord) {
+    let spotVal = this.grid[yCoord][xCoord][0];
+    //this.grid[yCoord][xCoord][0] = 0;
+    console.log(xCoord + "," + yCoord + "=" + spotVal);
+  }
+  , controls: function () {
     let thisRef = this;
+    
+    document.querySelector("canvas").addEventListener('click', function(evt) {
+        var mousePos = thisRef.getMousePos(this.canvas, evt);
+        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+        //console.log(message);
+      
+        thisRef.clickEffect(mousePos.x, mousePos.y);
+      }, false);
     
     document.querySelector("#colorMode").onchange = function (e) {
       thisRef.colorMode = e.target.value;
@@ -237,7 +257,7 @@ const app = {
   },
   draw: function () {
       //BG color, alpha is important
-      this.ctx.fillStyle = 'rgba(13, 9, 28, .2)';
+      this.ctx.fillStyle = 'rgba(13, 9, 28, 1)';
       this.ctx.fillRect(0, 0, this.width * this.cellSize, this.height * this.cellSize);
       this.ctx.fillStyle = 'black';
     
@@ -250,16 +270,16 @@ const app = {
             //change fillStyle based on color mode selected
             switch (this.colorMode) {
               case "default":
-                this.ctx.fillStyle = 'rgb(' + this.colorVal + ', 1 ,' + this.colorVal + ')';
+                this.ctx.fillStyle = 'hsl( 280, ' + this.colorVal * 3 + "%, " + this.colorVal * 1.2 + '%)';
                 break;
               case "blue":
-                this.ctx.fillStyle = 'rgb(' + this.colorVal + ',' + this.colorVal + ',' + Math.round(this.colorVal * 2.5) + ')';
+                this.ctx.fillStyle = 'hsl( 238, ' + this.colorVal + "%, " + this.colorVal * 0.7 + '%)';
                 break;
               case "orange":
-                this.ctx.fillStyle = 'rgb(' + this.colorVal * 4 + ',' + this.colorVal * 2 + ',' + 20 + ')';
+                this.ctx.fillStyle = 'hsl( 23, ' + this.colorVal + "%, " + this.colorVal * 0.5 + '%)';
                 break;
               case "B&W":
-                this.ctx.fillStyle = 'rgb(' + this.colorVal + ',' + this.colorVal + ',' + this.colorVal + ')';
+                this.ctx.fillStyle = 'hsl( 0, 0%, ' + this.colorVal + '%)';
             }
             if (this.grid[y][x][1] == this.maxAge - 1) {
               this.ctx.fillStyle = "red";
