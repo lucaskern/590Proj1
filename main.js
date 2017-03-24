@@ -6,7 +6,7 @@ const app = {
   firstRun: true,
   accurate: false,
   frames: 100,
-  framesLimit:30,
+  framesLimit:3,
   grid: [],
   temp: [],
   width: 20,
