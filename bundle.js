@@ -5,20 +5,10 @@ variable 'app' is in global scope - i.e. a property of window.
 app is our single global object literal - all other functions and properties of 
 the game will be properties of app.
 */
+
 "use strict";
 
-// if app exists use the existing copy
-// else create a new empty object literal
-//var app = app || {};
-
 const main = require('./main.js');
-
-/*window.onload = function(){
-  
-  
-  
-  app.main.init();
-}*/
 
 window.addEventListener('load', function () {
   console.log("window.onload ran");
@@ -152,39 +142,41 @@ const app = {
 
     ,
   controls: function () {
+    let thisRef = this;
+    
     document.querySelector("#colorMode").onchange = function (e) {
-      this.colorMode = e.target.value;
+      thisRef.colorMode = e.target.value;
     };
     document.querySelector("#cellSize").onchange = function (e) {
-      this.cellSize = e.target.value;
-      this.gridSetup();
+      thisRef.cellSize = e.target.value;
+      thisRef.gridSetup();
       document.querySelector("#cellSizeVal").value = e.target.value;
     };
     document.querySelector("#width").onchange = function (e) {
-      this.width = e.target.value;
-      this.gridSetup();
+      thisRef.width = e.target.value;
+      thisRef.gridSetup();
       document.querySelector("#widthVal").value = e.target.value;
     };
     document.querySelector("#height").onchange = function (e) {
-      this.height = e.target.value;
-      this.gridSetup();
+      thisRef.height = e.target.value;
+      thisRef.gridSetup();
       document.querySelector("#heightVal").value = e.target.value;
     };
     document.querySelector("#dispMode").onchange = function (e) {
       if (e.target.value == "aesthetics") {
-        this.accurate = false;
-        this.gridSetup();
+        thisRef.accurate = false;
+        thisRef.gridSetup();
       } else {
-        this.accurate = true;
-        this.gridSetup();
+        thisRef.accurate = true;
+        thisRef.gridSetup();
       }
     }
     document.querySelector("#maxAge").onchange = function (e) {
-      this.maxAge = e.target.value;
+      thisRef.maxAge = e.target.value;
       document.querySelector("#maxAgeVal").value = e.target.value;
     };
     document.querySelector("#colorRate").onchange = function (e) {
-      this.colorRate = e.target.value;
+      thisRef.colorRate = e.target.value;
       document.querySelector("#colorRateVal").value = e.target.value;
     };
   },
