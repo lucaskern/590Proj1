@@ -35,29 +35,26 @@ const app = {
 
     ,
   liveCount: 0
-
-    /*, audCtx : new AudioContext()
-    // create an oscillator
-    , osc : audCtx.createOscillator()
-    // change waveform of oscillator
-    , osc.type : 'sawtooth'
-    // start the oscillator running
-    , osc.start()*/
+  
+  //create an audioCtx  
+  , audCtx : undefined
+  // create an oscillator
+  , osc : undefined
 
     ,
   playNote: function (frequency, attack, decay, cmRatio, index) {
       //let audCtx = new AudioContext();
       // create our primary oscillator
-      const carrier = audCtx.createOscillator();
+      const carrier = this.audCtx.createOscillator();
       carrier.type = 'sine';
       carrier.frequency.value = frequency;
       // create an oscillator for modulation
-      const mod = audCtx.createOscillator();
+      const mod = this.audCtx.createOscillator();
       mod.type = 'sine';
       // The FM synthesis formula states that our modulators 
       // frequency = frequency * carrier-to-modulation ratio.
       mod.frequency.value = frequency * cmRatio;
-      const modGainNode = audCtx.createGain();
+      const modGainNode = this.audCtx.createGain();
       // The FM synthesis formula states that our modulators 
       // amplitude = frequency * index
       modGainNode.gain.value = frequency * index;
@@ -65,14 +62,14 @@ const app = {
       // plug the gain node into the frequency of
       // our oscillator
       modGainNode.connect(carrier.frequency);
-      const envelope = audCtx.createGain();
-      envelope.gain.linearRampToValueAtTime(1, audCtx.currentTime + attack);
-      envelope.gain.linearRampToValueAtTime(0, audCtx.currentTime + attack + decay);
+      const envelope = this.audCtx.createGain();
+      envelope.gain.linearRampToValueAtTime(1, this.audCtx.currentTime + attack);
+      envelope.gain.linearRampToValueAtTime(0, this.audCtx.currentTime + attack + decay);
       carrier.connect(envelope);
-      envelope.connect(audCtx.destination);
-      mod.start(audCtx.currentTime);
-      carrier.start(audCtx.currentTime);
-      osc.stop(audCtx.currentTime + attack + decay);
+      envelope.connect(this.audCtx.destination);
+      mod.start(this.audCtx.currentTime);
+      carrier.start(this.audCtx.currentTime);
+      this.osc.stop(this.audCtx.currentTime + attack + decay);
     }
 
     ,
@@ -87,13 +84,21 @@ const app = {
       this.controls();
 
       console.log("init ran");
+    
+      this.audCtx = new AudioContext();
+      // create an oscillator
+      this.osc = this.audCtx.createOscillator();
+      // change waveform of oscillator
+      this.osc.type = 'sawtooth';
+      // start the oscillator running
+      this.osc.start();
 
       //set up grid on first init only
       if (this.firstRun) {
         this.gridSetup();
         this.firstRun = false;
       }
-      //playNote(880, .01, 1, 1.5307, 1);
+      //this.playNote(880, .01, 1, 1.5307, 1);
       this.update();
     }
     //create grid using default or user modified values
@@ -239,7 +244,7 @@ const app = {
             this.temp[y][x][0] = 0;
             this.temp[y][x][1] = 0;
             //play note on death from old age
-            //playNote(1333, .04, .1, 1.5307, 1);
+            this.playNote(1333, .04, .1, 1.5307, 1);
           }
         } else if (this.grid[y][x][0] == 0) {
           if (this.liveCount == 3) {
