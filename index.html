@@ -20,7 +20,11 @@
       margin: 0 auto;
       background-color: rgba(10, 10, 10, 1);
       width: 100%;
-      height: 50px;
+      height: 130px;
+    }
+    
+    .controls ul {
+      float: left;
     }
     
     label {
@@ -36,47 +40,70 @@
 <body>
   <canvas></canvas>
   <div class="controls">
-    <label> Color Scheme
-      <select id="colorMode">
-        <option name="B&W" value="B&W"> B&W </option>
-        <option name="default" value="default"> Default </option>
-        <option name="blue" value="blue"> Blue </option>
-        <option name="orange" value="orange"> Orange </option>
-      </select>
-    </label>
-    <label> Cell Size:
-      <input id="cellSize" name="cellSize" type="range" value="20" min="3" max="25">
-      <output name="cellSizeVal" id="cellSizeVal">20</output>
-    </label>
-    <label> Cell Num: Width
-      <input id="width" type="range" value="20" min="20" max="60">
-      <output name="widthVal" id="widthVal">20</output>
-    </label>
-    <label> Cell Num: Height
-      <input id="height" name="height" type="range" value="20" min="20" max="45">
-      <output name="heightVal" id="heightVal">20</output>
-    </label>
-    <label> Display Mode
-      <select id="dispMode">
-        <option name="aesthetics" value="aesthetics"> Aesthetic </option>
-        <option name="Conway" valye="conway"> Conway </option>
-      </select>
-    </label>
-    <label> Max Cell Age
-      <input id="maxAge" type="range" value="30" min="25" max="50">
-      <output name="maxAgeVal" id="maxAgeVal">30</output>
-    </label>
-    <label> Color Change Rate
-      <input id="colorRate" type="range" value="6" min="0" max="50">
-      <output name="colorRateVal" id="colorRateVal">6</output>
-    </label>
+    <ul>
+      <li>
+        <label> Color Scheme
+          <select id="colorMode">
+            <option name="B&W" value="B&W"> B&W </option>
+            <option name="default" value="default"> Default </option>
+            <option name="blue" value="blue"> Blue </option>
+            <option name="orange" value="orange"> Orange </option>
+          </select>
+        </label>
+      </li>
+      <li>
+        <label> Display Mode
+          <select id="dispMode">
+            <option name="aesthetics" value="aesthetics"> Aesthetic </option>
+            <option name="Conway" valye="conway"> Conway </option>
+          </select>
+        </label>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <label> Cell Size:
+          <input id="cellSize" name="cellSize" type="range" value="20" min="3" max="25">
+          <output name="cellSizeVal" id="cellSizeVal">20</output>
+        </label>
+      </li>
+      <li>
+        <label> Cell Num: Width
+          <input id="width" type="range" value="20" min="20" max="60">
+          <output name="widthVal" id="widthVal">20</output>
+        </label>
+      </li>
+      <li>
+        <label> Cell Num: Height
+          <input id="height" name="height" type="range" value="20" min="20" max="45">
+          <output name="heightVal" id="heightVal">20</output>
+        </label>
+      </li>
+    </ul>
+    <ul>
+      <li>
+        <label> Max Cell Age
+          <input id="maxAge" type="range" value="30" min="25" max="50">
+          <output name="maxAgeVal" id="maxAgeVal">30</output>
+        </label>
+      </li>
+      <li>
+        <label> Color Change Rate
+          <input id="colorRate" type="range" value="6" min="0" max="50">
+          <output name="colorRateVal" id="colorRateVal">6</output>
+        </label>
+      </li>
+    </ul>
+    <ul> 
+      <li> 
+        <button id="play"> |> </button>
+        <button id="forward"> >> </button>
+      </li>
+    </ul>
   </div>
-  
   <script src="bundle.js" type="text/javascript"></script>
-  
   <!--<script src='main.js'></script>
   <script src='loader.js'></script>-->
-  
-  </body>
+</body>
 
 </html>
