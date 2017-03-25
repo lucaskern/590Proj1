@@ -23,7 +23,7 @@ const app = {
   firstRun: true,
   accurate: false,
   frames: 100,
-  framesLimit:30,
+  framesLimit: 3,
   grid: [],
   temp: [],
   width: 20,
@@ -52,7 +52,7 @@ const app = {
 
     ,
   liveCount: 0
-  
+
     /*, audCtx : new AudioContext()
     // create an oscillator
     , osc : audCtx.createOscillator()
@@ -63,36 +63,37 @@ const app = {
 
     ,
   playNote: function (frequency, attack, decay, cmRatio, index) {
-    //let audCtx = new AudioContext();
-    // create our primary oscillator
-    const carrier = audCtx.createOscillator();
-    carrier.type = 'sine';
-    carrier.frequency.value = frequency;
-    // create an oscillator for modulation
-    const mod = audCtx.createOscillator();
-    mod.type = 'sine';
-    // The FM synthesis formula states that our modulators 
-    // frequency = frequency * carrier-to-modulation ratio.
-    mod.frequency.value = frequency * cmRatio;
-    const modGainNode = audCtx.createGain();
-    // The FM synthesis formula states that our modulators 
-    // amplitude = frequency * index
-    modGainNode.gain.value = frequency * index;
-    mod.connect(modGainNode);
-    // plug the gain node into the frequency of
-    // our oscillator
-    modGainNode.connect(carrier.frequency);
-    const envelope = audCtx.createGain();
-    envelope.gain.linearRampToValueAtTime(1, audCtx.currentTime + attack);
-    envelope.gain.linearRampToValueAtTime(0, audCtx.currentTime + attack + decay);
-    carrier.connect(envelope);
-    envelope.connect(audCtx.destination);
-    mod.start(audCtx.currentTime);
-    carrier.start(audCtx.currentTime);
-    osc.stop(audCtx.currentTime + attack + decay);
-  }
-  
-  , init: function () {
+      //let audCtx = new AudioContext();
+      // create our primary oscillator
+      const carrier = audCtx.createOscillator();
+      carrier.type = 'sine';
+      carrier.frequency.value = frequency;
+      // create an oscillator for modulation
+      const mod = audCtx.createOscillator();
+      mod.type = 'sine';
+      // The FM synthesis formula states that our modulators 
+      // frequency = frequency * carrier-to-modulation ratio.
+      mod.frequency.value = frequency * cmRatio;
+      const modGainNode = audCtx.createGain();
+      // The FM synthesis formula states that our modulators 
+      // amplitude = frequency * index
+      modGainNode.gain.value = frequency * index;
+      mod.connect(modGainNode);
+      // plug the gain node into the frequency of
+      // our oscillator
+      modGainNode.connect(carrier.frequency);
+      const envelope = audCtx.createGain();
+      envelope.gain.linearRampToValueAtTime(1, audCtx.currentTime + attack);
+      envelope.gain.linearRampToValueAtTime(0, audCtx.currentTime + attack + decay);
+      carrier.connect(envelope);
+      envelope.connect(audCtx.destination);
+      mod.start(audCtx.currentTime);
+      carrier.start(audCtx.currentTime);
+      osc.stop(audCtx.currentTime + attack + decay);
+    }
+
+    ,
+  init: function () {
       console.log("app.main.init() called");
       // initialize properties
       this.canvas = document.querySelector('canvas');
@@ -101,9 +102,9 @@ const app = {
       this.ctx = this.canvas.getContext('2d');
       //set up controls
       this.controls();
-    
+
       console.log("init ran");
-    
+
       //set up grid on first init only
       if (this.firstRun) {
         this.gridSetup();
@@ -140,30 +141,35 @@ const app = {
     }
     //set up value controllers
 
-  , getMousePos: function(canvas, evt) {
-    var rect = this.canvas.getBoundingClientRect();
-    return {
-      x: Math.floor((evt.clientX - rect.left) / this.cellSize) - 1,
-      y: Math.floor((evt.clientY - rect.top) / this.cellSize) - 1
-    };
-  }
-  
-  , clickEffect: function(xCoord, yCoord) {
-    let spotVal = this.grid[yCoord][xCoord][0];
+    ,
+  getMousePos: function (canvas, evt) {
+      var rect = this.canvas.getBoundingClientRect();
+      return {
+        x: Math.floor((evt.clientX - rect.left) / this.cellSize),
+        y: Math.floor((evt.clientY - rect.top) / this.cellSize)
+      };
+    }
+
+    ,
+  clickEffect: function (xCoord, yCoord) {
+
+    this.grid[yCoord][xCoord][3] = 1;
+
+
     //this.grid[yCoord][xCoord][0] = 0;
-    console.log(xCoord + "," + yCoord + "=" + spotVal);
-  }
-  , controls: function () {
+    console.log(xCoord + "," + yCoord);
+  },
+  controls: function () {
     let thisRef = this;
-    
-    document.querySelector("canvas").addEventListener('click', function(evt) {
-        var mousePos = thisRef.getMousePos(this.canvas, evt);
-        var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-        //console.log(message);
-      
-        thisRef.clickEffect(mousePos.x, mousePos.y);
-      }, false);
-    
+
+    document.querySelector("canvas").addEventListener('click', function (evt) {
+      var mousePos = thisRef.getMousePos(this.canvas, evt);
+      var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+      //console.log(message);
+
+      thisRef.clickEffect(mousePos.x, mousePos.y);
+    }, false);
+
     document.querySelector("#colorMode").onchange = function (e) {
       thisRef.colorMode = e.target.value;
     };
@@ -274,10 +280,10 @@ const app = {
   },
   draw: function () {
       //BG color, alpha is important
-      this.ctx.fillStyle = 'rgba(13, 9, 28, 1)';
+      this.ctx.fillStyle = 'rgba(13, 9, 28, .2)';
       this.ctx.fillRect(0, 0, this.width * this.cellSize, this.height * this.cellSize);
       this.ctx.fillStyle = 'black';
-    
+
       for (let y = 0; y < this.height; y++) {
         for (let x = 0; x < this.width; x++) {
           if (this.grid[y][x][0] == 1) {
@@ -300,11 +306,15 @@ const app = {
             }
             if (this.grid[y][x][1] == this.maxAge - 1) {
               this.ctx.fillStyle = "red";
+            } else if (this.grid[y][x][3] != null) {
+              this.ctx.fillStyle = 'hsl( 124, 100%, 60%)';
+              console.log(this.grid[y][x]);
             }
             //fill and stroke rects
             this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize)
             this.ctx.strokeRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
           }
+
           //make border
           else if (x == 0 || y == 0 || x == this.width - 1 || y == this.height - 1) {
             this.ctx.fillStyle = "black";
@@ -321,9 +331,9 @@ const app = {
     ,
   update: function () {
     this.animationID = requestAnimationFrame(this.update.bind(this));
-    
+
     //this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
+
     //only draw once threshold is passed
     if (this.frames >= this.framesLimit) {
       this.draw();
@@ -337,4 +347,5 @@ const app = {
 }
 
 module.exports = app;
+
 },{}]},{},[1]);
