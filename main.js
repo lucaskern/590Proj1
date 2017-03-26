@@ -126,8 +126,16 @@ const app = {
     };
   }
   , clickEffect: function (xCoord, yCoord) {
-    this.grid[yCoord][xCoord][3] = 1;
+    //this.grid[yCoord][xCoord][0] = 1;
     //this.grid[yCoord][xCoord][0] = 0;
+    //this.grid[yCoord - 1][xCoord - 1][0] == 1
+    this.grid[yCoord - 1][xCoord][0] = 1
+    //this.grid[yCoord - 1][xCoord + 1][0] == 1
+    //this.grid[yCoord][xCoord - 1][0] == 1
+    this.grid[yCoord][xCoord + 1][0] = 1
+    this.grid[yCoord + 1][xCoord - 1][0] = 1
+    this.grid[yCoord + 1][xCoord][0] = 1
+    this.grid[yCoord + 1][xCoord + 1][0] = 1
     console.log(xCoord + "," + yCoord);
   }
   , controls: function () {
@@ -264,7 +272,7 @@ const app = {
   }
   , draw: function () {
     //BG color, alpha is important
-    this.ctx.fillStyle = 'rgba(13, 9, 28, .2)';
+    this.ctx.fillStyle = 'rgba(13, 9, 28, 1)';
     this.ctx.fillRect(0, 0, this.width * this.cellSize, this.height * this.cellSize);
     this.ctx.fillStyle = 'black';
     for (let y = 0; y < this.height; y++) {
@@ -317,11 +325,9 @@ const app = {
     }
     console.log("play");
   }
-  
   , forward: function () {
     this.draw();
   }
-  
   , update: function () {
     this.animationID = requestAnimationFrame(this.update.bind(this));
     //this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
