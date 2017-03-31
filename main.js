@@ -1,41 +1,27 @@
 'use strict'
 const app = {
-  canvas: undefined
-  , ctx: undefined
-  , firstRun: true
-  , accurate: false
-  , playBool: true
-  , frames: 100
-  , framesLimit: 3
-  , grid: []
-  , temp: []
-  , width: 20
-  , height: 20
-    //size of each cell in px
-    
-  , cellSize: 40
-    //max amount of times a cell can be consecutively alive before dying.
-    
-  , maxAge: 10
-    //how fast it changes color (higher : quicker)
-    
-  , colorRate: 6
-    //color values for bg
-    
-  , colorMode: "default"
-    //color of cells
-    
-  , colorVal: null
-    //live neighbor count
-    
-  , liveCount: 0
-    //create an audioCtx  
-    
-  , audCtx: undefined
-    // create an oscillator
-    
-  , osc: undefined
-  , playNote: function (frequency, attack, decay, cmRatio, index) {
+  canvas: undefined,
+  ctx: undefined,
+  firstRun: true,
+  accurate: false,
+  playBool: true,
+  audioClick: true,
+  frames: 100,
+  framesLimit: 3,
+  grid: [],
+  temp: [],
+  width: 60,
+  height: 30, //size of each cell in px
+  cellSize: 25, //max amount of times a cell can be consecutively alive before dying.
+  maxAge: 30, //how fast it changes color (higher : quicker)
+  colorRate: 6, //color values for bg
+  colorMode: "B&W", //color of cells
+  colorVal: null,
+  shape: 'flyer', //live neighbor count
+  liveCount: 0, //create an audioCtx  
+  audCtx: undefined, // create an oscillator
+  osc: undefined,
+  playNote(frequency, attack, decay, cmRatio, index) {
     //let audCtx = new AudioContext();
     // create our primary oscillator
     const carrier = this.audCtx.createOscillator();
@@ -65,80 +51,112 @@ const app = {
     mod.stop(this.audCtx.currentTime + attack + decay);
     carrier.stop(this.audCtx.currentTime + attack + decay);
     //this.osc.close();
-  }
-  , init: function () {
-      console.log("app.main.init() called");
-      // initialize properties
-      this.canvas = document.querySelector('canvas');
-      this.canvas.width = this.width * this.cellSize;
-      this.canvas.height = this.height * this.cellSize;
-      this.ctx = this.canvas.getContext('2d');
-      //set up controls
-      this.controls();
-      console.log("init ran");
-      this.audCtx = new AudioContext();
-      // create an oscillator
-      this.osc = this.audCtx.createOscillator();
-      // change waveform of oscillator
-      this.osc.type = 'sawtooth';
-      // start the oscillator running
-      this.osc.start();
-      //set up grid on first init only
-      if (this.firstRun) {
-        this.gridSetup();
-        this.firstRun = false;
-      }
-      //this.playNote(880, .01, 1, 1.5307, 1);
-      this.update();
+  },
+  init() {
+    console.log("app.main.init() called");
+    // initialize properties
+    this.canvas = document.querySelector('canvas');
+    this.canvas.width = this.width * this.cellSize;
+    this.canvas.height = this.height * this.cellSize;
+    this.ctx = this.canvas.getContext('2d');
+    //set up controls
+    this.controls();
+    console.log("init ran");
+    this.audCtx = new AudioContext();
+    // create an oscillator
+    this.osc = this.audCtx.createOscillator();
+    // change waveform of oscillator
+    this.osc.type = 'sawtooth';
+    // start the oscillator running
+    this.osc.start();
+    //set up grid on first init only
+    if (this.firstRun) {
+      this.gridSetup();
+      this.firstRun = false;
     }
-    //create grid using default or user modified values
-    
-  , gridSetup: function () {
-      this.grid = [];
-      this.temp = [];
-      //create canvas at appropriate size
-      this.canvas.width = this.width * this.cellSize;
-      this.canvas.height = this.height * this.cellSize;
-      this.ctx.fillStyle = "black";
-      this.ctx.fillRect(0, 0, 3000, 3000);
-      //instantiate spaces in arrays
-      for (let y = 0; y < this.height; y++) {
-        this.grid[y] = [[]];
-        this.temp[y] = [[]];
-        for (let x = 0; x < this.width; x++) {
-          //fill with random values 
-          this.grid[y][x] = [Math.round(Math.random()), 0];
-          this.temp[y][x] = [0, 0];
-          //create border
-          if (x == 0 || y == 0 || x == this.width - 1 || y == this.height - 1) {
-            this.grid[y][x] = 0;
-          }
+    //this.playNote(880, .01, 1, 1.5307, 1);
+    this.update();
+  }
+  //create grid using default or user modified values
+
+  ,
+  gridSetup() {
+    this.grid = [];
+    this.temp = [];
+    //create canvas at appropriate size
+    this.canvas.width = this.width * this.cellSize;
+    this.canvas.height = this.height * this.cellSize;
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(0, 0, 3000, 3000);
+    //instantiate spaces in arrays
+    for (let y = 0; y < this.height; y++) {
+      this.grid[y] = [[]];
+      this.temp[y] = [[]];
+      for (let x = 0; x < this.width; x++) {
+        //fill with random values 
+        this.grid[y][x] = [Math.round(Math.random()), 0];
+        this.temp[y][x] = [0, 0];
+        //create border
+        if (x == 0 || y == 0 || x == this.width - 1 || y == this.height - 1) {
+          this.grid[y][x] = 0;
         }
       }
     }
-    //set up value controllers
-    
-  , getMousePos: function (canvas, evt) {
+  }
+  //set up value controllers
+
+  ,
+  getMousePos(canvas, evt) {
     var rect = this.canvas.getBoundingClientRect();
     return {
-      x: Math.floor((evt.clientX - rect.left) / this.cellSize)
-      , y: Math.floor((evt.clientY - rect.top) / this.cellSize)
+      x: Math.floor((evt.clientX - rect.left) / this.cellSize),
+      y: Math.floor((evt.clientY - rect.top) / this.cellSize)
     };
-  }
-  , clickEffect: function (xCoord, yCoord) {
-    //this.grid[yCoord][xCoord][0] = 1;
-    //this.grid[yCoord][xCoord][0] = 0;
-    //this.grid[yCoord - 1][xCoord - 1][0] == 1
-    this.grid[yCoord - 1][xCoord][0] = 1
-    //this.grid[yCoord - 1][xCoord + 1][0] == 1
-    //this.grid[yCoord][xCoord - 1][0] == 1
-    this.grid[yCoord][xCoord + 1][0] = 1
-    this.grid[yCoord + 1][xCoord - 1][0] = 1
-    this.grid[yCoord + 1][xCoord][0] = 1
-    this.grid[yCoord + 1][xCoord + 1][0] = 1
+  },
+  clickEffect(xCoord, yCoord) {
+    if (this.audioClick) {
+      let freqVal = parseFloat(document.getElementById("freq").value);
+      let attackVal = parseFloat(document.getElementById("attack").value);
+      let decayVal = parseFloat(document.getElementById("decay").value);
+      let cmVal = parseFloat(document.getElementById("cm").value);
+      let indexVal = parseFloat(document.getElementById("indexV").value);
+      
+      this.grid[yCoord][xCoord][3] = 1;
+      this.grid[yCoord][xCoord][4] = freqVal;
+      this.grid[yCoord][xCoord][5] = attackVal;
+      this.grid[yCoord][xCoord][6] = decayVal;
+      this.grid[yCoord][xCoord][7] = cmVal;
+      this.grid[yCoord][xCoord][8] = indexVal;
+    } else {
+      switch (this.shape) {
+        case 'flyer':
+          //this.grid[yCoord][xCoord][0] = 1;
+          //this.grid[yCoord][xCoord][0] = 0;
+          //this.grid[yCoord - 1][xCoord - 1][0] == 1
+          this.grid[yCoord - 1][xCoord][0] = 1
+          //this.grid[yCoord - 1][xCoord + 1][0] == 1
+          //this.grid[yCoord][xCoord - 1][0] == 1
+          this.grid[yCoord][xCoord + 1][0] = 1
+          this.grid[yCoord + 1][xCoord - 1][0] = 1
+          this.grid[yCoord + 1][xCoord][0] = 1
+          this.grid[yCoord + 1][xCoord + 1][0] = 1
+          break;
+        case 'blinker':
+          this.grid[yCoord][xCoord][0] = 1;
+          //this.grid[yCoord - 1][xCoord - 1][0] == 1
+          this.grid[yCoord - 1][xCoord][0] = 1
+          //this.grid[yCoord - 1][xCoord + 1][0] == 1
+          //this.grid[yCoord][xCoord - 1][0] == 1
+          //this.grid[yCoord][xCoord + 1][0] = 1
+          //this.grid[yCoord + 1][xCoord - 1][0] = 1
+          this.grid[yCoord + 1][xCoord][0] = 1
+          //this.grid[yCoord + 1][xCoord + 1][0] = 1
+          break;
+      }
+    }
     console.log(xCoord + "," + yCoord);
-  }
-  , controls: function () {
+  },
+  controls() {
     let thisRef = this;
     document.querySelector("canvas").addEventListener('click', function (evt) {
       var mousePos = thisRef.getMousePos(this.canvas, evt);
@@ -151,6 +169,10 @@ const app = {
     };
     document.querySelector("#forward").onclick = function (e) {
       thisRef.forward();
+    };
+    document.querySelector("#speed").onchange = function (e) {
+      thisRef.framesLimit = e.target.value;
+      document.querySelector("#speedVal").value = e.target.value;
     };
     document.querySelector("#colorMode").onchange = function (e) {
       thisRef.colorMode = e.target.value;
@@ -174,8 +196,7 @@ const app = {
       if (e.target.value == "aesthetics") {
         thisRef.accurate = false;
         thisRef.gridSetup();
-      }
-      else {
+      } else {
         thisRef.accurate = true;
         thisRef.gridSetup();
       }
@@ -188,8 +209,11 @@ const app = {
       thisRef.colorRate = e.target.value;
       document.querySelector("#colorRateVal").value = e.target.value;
     };
-  }
-  , runAutomata: function () {
+    document.querySelector("#shape").onchange = function (e) {
+      thisRef.shape = e.target.value;
+    };
+  },
+  runAutomata() {
     // loop through every cell
     // look at cell neighbors and count live ones
     // determine next cell state based on neighbor count
@@ -228,12 +252,10 @@ const app = {
             this.temp[y][x][0] = 0;
             this.temp[y][x][1] = 0;
             //playNote(333, .01, .5, 2.5307, 1);
-          }
-          else if (this.liveCount == 2 || this.liveCount == 3) {
+          } else if (this.liveCount == 2 || this.liveCount == 3) {
             this.temp[y][x][0] = 1;
             this.temp[y][x][1]++;
-          }
-          else {
+          } else {
             this.temp[y][x][0] = 0;
             this.temp[y][x][1] = 0;
           }
@@ -241,20 +263,18 @@ const app = {
             this.temp[y][x][0] = 0;
             this.temp[y][x][1] = 0;
             if (this.grid[y][x][3] == 1) {
-              this.playNote(1599, .04, 1.5, 1.0307, 1);
-            }
-            else {
+              let cell = this.grid[y][x]
+              this.playNote(cell[4], cell[5], cell[6], cell[7], cell[8]);
+            } else {
               //play note on death from old age
-              this.playNote(199, .08, .25, 1.5307, 1);
+              //this.playNote(199, .08, .25, 1.5307, 1);
             }
           }
-        }
-        else if (this.grid[y][x][0] == 0) {
+        } else if (this.grid[y][x][0] == 0) {
           if (this.liveCount == 3) {
             this.temp[y][x][0] = 1;
             this.temp[y][x][1]++;
-          }
-          else {
+          } else {
             this.temp[y][x][0] = 0;
             this.temp[y][x][1] = 0;
           }
@@ -269,10 +289,10 @@ const app = {
     if (this.accurate) {
       this.temp = swap;
     }
-  }
-  , draw: function () {
+  },
+  draw() {
     //BG color, alpha is important
-    this.ctx.fillStyle = 'rgba(13, 9, 28, 1)';
+    this.ctx.fillStyle = 'rgba(0, 0, 0, .3)';
     this.ctx.fillRect(0, 0, this.width * this.cellSize, this.height * this.cellSize);
     this.ctx.fillStyle = 'black';
     for (let y = 0; y < this.height; y++) {
@@ -283,22 +303,21 @@ const app = {
           this.colorVal = (this.grid[y][x][1] * this.colorRate).toString();
           //change fillStyle based on color mode selected
           switch (this.colorMode) {
-          case "default":
-            this.ctx.fillStyle = 'hsl( 280, ' + this.colorVal * 3 + "%, " + this.colorVal * 1.2 + '%)';
-            break;
-          case "blue":
-            this.ctx.fillStyle = 'hsl( 238, ' + this.colorVal + "%, " + this.colorVal * 0.7 + '%)';
-            break;
-          case "orange":
-            this.ctx.fillStyle = 'hsl( 23, ' + this.colorVal + "%, " + this.colorVal * 0.5 + '%)';
-            break;
-          case "B&W":
-            this.ctx.fillStyle = 'hsl( 0, 0%, ' + this.colorVal + '%)';
+            case "pink":
+              this.ctx.fillStyle = 'hsl( 280, ' + this.colorVal * 3 + "%, " + this.colorVal * 1.2 + '%)';
+              break;
+            case "green":
+              this.ctx.fillStyle = 'hsl(89 ,' + this.colorVal + "%, " + this.colorVal * 0.7 + '%)';
+              break;
+            case "orange":
+              this.ctx.fillStyle = 'hsl( 23, ' + this.colorVal + "%, " + this.colorVal * 0.5 + '%)';
+              break;
+            case "B&W":
+              this.ctx.fillStyle = 'hsl( 0, 0%, ' + this.colorVal + '%)';
           }
           if (this.grid[y][x][1] == this.maxAge - 1) {
             this.ctx.fillStyle = "red";
-          }
-          else if (this.grid[y][x][3] != null) {
+          } else if (this.grid[y][x][4] != null) {
             this.ctx.fillStyle = 'hsl( 124, 100%, 60%)';
             //console.log(this.grid[y][x]);
           }
@@ -315,20 +334,19 @@ const app = {
     }
     //run round of cell calculations
     this.runAutomata();
-  }
-  , play: function () {
+  },
+  play() {
     if (this.playBool) {
       this.playBool = false;
-    }
-    else {
+    } else {
       this.playBool = true;
     }
     console.log("play");
-  }
-  , forward: function () {
+  },
+  forward() {
     this.draw();
-  }
-  , update: function () {
+  },
+  update() {
     this.animationID = requestAnimationFrame(this.update.bind(this));
     //this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     //only draw once threshold is passed
@@ -338,8 +356,7 @@ const app = {
         this.frames = 0;
       }
       this.frames++;
-    }
-    else if (!this.playBool) {}
+    } else if (!this.playBool) {}
     //stop tracking fps
     //window.requestAnimationFrame(update);
   }
