@@ -21,6 +21,8 @@ const app = {
   hueVal: 100,
   satVal: 50,
   brightVal: 50,
+  border: true,
+  lineW: 1,
   shape: 'flyer', //live neighbor count
   liveCount: 0, //create an audioCtx
   audCtx: undefined, // create an oscillator
@@ -34,7 +36,7 @@ const app = {
     this.canvas.height = this.height * this.cellSize;
     this.ctx = this.canvas.getContext('2d');
 
-    this.ctx.strokeStyle = "black";
+
 
     //set up controls
     this.controls();
@@ -165,6 +167,20 @@ const app = {
       }
     };
 
+    //Color options
+    document.querySelector("#hue").onchange = function (e) {
+      thisRef.hueVal = e.target.value;
+      document.querySelector("#hueVal").value = e.target.value;
+    };
+    document.querySelector("#saturation").onchange = function (e) {
+      thisRef.satVal = e.target.value;
+      document.querySelector("#saturationVal").value = e.target.value;
+    };
+    document.querySelector("#bright").onchange = function (e) {
+      thisRef.brightVal = e.target.value;
+      document.querySelector("#brightVal").value = e.target.value;
+    };
+
     //Grid options
     document.querySelector("#cellSize").onchange = function (e) {
       thisRef.cellSize = e.target.value;
@@ -182,20 +198,6 @@ const app = {
       document.querySelector("#heightVal").value = e.target.value;
     };
 
-    //Color options
-    document.querySelector("#hue").onchange = function (e) {
-      thisRef.hueVal = e.target.value;
-      document.querySelector("#hueVal").value = e.target.value;
-    };
-    document.querySelector("#saturation").onchange = function (e) {
-      thisRef.satVal = e.target.value;
-      document.querySelector("#saturationVal").value = e.target.value;
-    };
-    document.querySelector("#bright").onchange = function (e) {
-      thisRef.brightVal = e.target.value;
-      document.querySelector("#brightVal").value = e.target.value;
-    };
-
     //Cell options
     document.querySelector("#maxAge").onchange = function (e) {
       thisRef.maxAge = e.target.value;
@@ -207,6 +209,16 @@ const app = {
     };
     document.querySelector("#shape").onchange = function (e) {
       thisRef.shape = e.target.value;
+    };
+    document.querySelector("#border").onchange = function (e) {
+      if (e.target.value == 0) {
+        thisRef.border = false;
+      } else {
+        thisRef.border = true;
+        thisRef.lineW = e.target.value;
+      }
+
+      document.querySelector("#borderVal").value = e.target.value;
     };
 
     document.querySelector("#clickMode").onchange = function (e) {
@@ -304,6 +316,9 @@ const app = {
     this.ctx.fillRect(0, 0, this.width * this.cellSize, this.height * this.cellSize);
     //this.ctx.fillStyle = 'black';
 
+    this.ctx.strokeStyle = "black";
+    this.ctx.lineWidth = this.lineW;
+
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         //determine color intensity of cell based on its age
@@ -328,18 +343,22 @@ const app = {
         if (this.grid[y][x][0] == 1) {
           if (this.grid[y][x][1] == this.maxAge - 1) {
             this.ctx.fillStyle = "red";
-          } else if (this.grid[y][x][4] != null) {
+          } else if (this.grid[y][x][3] == 1) {
             this.ctx.fillStyle = 'hsl( 124, 100%, 60%)';
             //console.log(this.grid[y][x]);
           }
           //fill and stroke rects
-          this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize)
-          this.ctx.strokeRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+          this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+
+
+          if (this.border) {
+            this.ctx.strokeRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+          }
         }
         //make border
         else if (x == 0 || y == 0 || x == this.width - 1 || y == this.height - 1) {
           this.ctx.fillStyle = "black";
-          this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+          //this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
         }
       }
     }
