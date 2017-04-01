@@ -26,37 +26,6 @@ const app = {
   audCtx: undefined, // create an oscillator
   osc: undefined,
 
-  playNote(frequency, attack, decay, cmRatio, index) {
-    //let audCtx = new AudioContext();
-    // create our primary oscillator
-    const carrier = this.audCtx.createOscillator();
-    carrier.type = 'sine';
-    carrier.frequency.value = frequency;
-    // create an oscillator for modulation
-    const mod = this.audCtx.createOscillator();
-    mod.type = 'sine';
-    // The FM synthesis formula states that our modulators
-    // frequency = frequency * carrier-to-modulation ratio.
-    mod.frequency.value = frequency * cmRatio;
-    const modGainNode = this.audCtx.createGain();
-    // The FM synthesis formula states that our modulators
-    // amplitude = frequency * index
-    modGainNode.gain.value = frequency * index;
-    mod.connect(modGainNode);
-    // plug the gain node into the frequency of
-    // our oscillator
-    modGainNode.connect(carrier.frequency);
-    const envelope = this.audCtx.createGain();
-    envelope.gain.linearRampToValueAtTime(1, this.audCtx.currentTime + attack);
-    envelope.gain.linearRampToValueAtTime(0, this.audCtx.currentTime + attack + decay);
-    carrier.connect(envelope);
-    envelope.connect(this.audCtx.destination);
-    mod.start(this.audCtx.currentTime);
-    carrier.start(this.audCtx.currentTime);
-    mod.stop(this.audCtx.currentTime + attack + decay);
-    carrier.stop(this.audCtx.currentTime + attack + decay);
-    //this.osc.close();
-  },
   init() {
     console.log("app.main.init() called");
     // initialize properties
@@ -64,6 +33,9 @@ const app = {
     this.canvas.width = this.width * this.cellSize;
     this.canvas.height = this.height * this.cellSize;
     this.ctx = this.canvas.getContext('2d');
+
+    this.ctx.strokeStyle = "black";
+
     //set up controls
     this.controls();
     console.log("init ran");
@@ -81,10 +53,8 @@ const app = {
     }
     //this.playNote(880, .01, 1, 1.5307, 1);
     this.update();
-  }
+  },
   //create grid using default or user modified values
-
-  ,
   gridSetup() {
     this.grid = [];
     this.temp = [];
@@ -108,9 +78,7 @@ const app = {
         }
       }
     }
-  }
-  //set up value controllers
-  ,
+  },
   getMousePos(canvas, evt) {
     var rect = this.canvas.getBoundingClientRect();
     return {
@@ -161,6 +129,7 @@ const app = {
     }
     console.log(xCoord + "," + yCoord);
   },
+  //set up value controllers
   controls() {
     let thisRef = this;
     document.querySelector("canvas").addEventListener('click', function (evt) {
@@ -240,6 +209,14 @@ const app = {
       thisRef.shape = e.target.value;
     };
 
+    document.querySelector("#clickMode").onchange = function (e) {
+      if (e.target.value == "audio") {
+        thisRef.audioClick = true;
+      } else {
+        thisRef.audioClick = false;
+      }
+    };
+
   },
   runAutomata() {
     // loop through every cell
@@ -308,6 +285,9 @@ const app = {
           }
         }
         this.liveCount = 0;
+
+        this.grid[y][x][10] = (this.grid[y][x][1] * this.colorRate);
+
       }
     }
     // after for loop swap grid and temp arrays
@@ -322,30 +302,30 @@ const app = {
     //BG color, alpha is important
     this.ctx.fillStyle = 'rgba(0, 0, 0, .3)';
     this.ctx.fillRect(0, 0, this.width * this.cellSize, this.height * this.cellSize);
-    this.ctx.fillStyle = 'black';
+    //this.ctx.fillStyle = 'black';
+
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
-        if (this.grid[y][x][0] == 1) {
-          this.ctx.strokeStyle = "black";
-          //determine color intensity of cell based on its age
-          this.colorVal = (this.grid[y][x][1] * this.colorRate).toString();
-          //change fillStyle based on color mode selected
-          switch (this.colorMode) {
-            case "pink":
-              this.ctx.fillStyle = 'hsl( 280, ' + this.colorVal * 3 + "%, " + this.colorVal * 1.2 + '%)';
-              break;
-            case "green":
-              this.ctx.fillStyle = 'hsl(89 ,' + this.colorVal + "%, " + this.colorVal * 0.7 + '%)';
-              break;
-            case "orange":
-              this.ctx.fillStyle = 'hsl( 23, ' + this.colorVal + "%, " + this.colorVal * 0.5 + '%)';
-              break;
-            case "B&W":
-              this.ctx.fillStyle = 'hsl( 0, 0%, ' + this.colorVal + '%)';
-              break;
-            case "custom":
-              this.ctx.fillStyle = 'hsl(' + (this.hueVal / 30) * this.colorVal + ',' +  (this.satVal / 30) * this.colorVal + '%,' + (this.brightVal / 30) * this.colorVal + '%)';
+        //determine color intensity of cell based on its age
+        //change fillStyle based on color mode selected
+        switch (this.colorMode) {
+          case "pink":
+            this.ctx.fillStyle = 'hsl( 280, ' + this.grid[y][x][10] * 3 + "%, " + this.grid[y][x][10] * 1.2 + '%)';
+            break;
+          case "green":
+            this.ctx.fillStyle = 'hsl(89 ,' + this.grid[y][x][10] + "%, " + this.grid[y][x][10] * 0.7 + '%)';
+            break;
+          case "orange":
+            this.ctx.fillStyle = 'hsl( 23, ' + this.grid[y][x][10] + "%, " + this.grid[y][x][10] * 0.5 + '%)';
+            break;
+          case "B&W":
+            this.ctx.fillStyle = 'hsl( 0, 0%, ' + this.grid[y][x][10] + '%)';
+            break;
+          case "custom":
+            this.ctx.fillStyle = 'hsl(' + (this.hueVal / 30) * this.grid[y][x][10] + ',' +  (this.satVal / 30) * this.grid[y][x][10] + '%,' + (this.brightVal / 30) * this.grid[y][x][10] + '%)';
           }
+
+        if (this.grid[y][x][0] == 1) {
           if (this.grid[y][x][1] == this.maxAge - 1) {
             this.ctx.fillStyle = "red";
           } else if (this.grid[y][x][4] != null) {
@@ -376,6 +356,37 @@ const app = {
   },
   forward() {
     this.draw();
+  },
+  playNote(frequency, attack, decay, cmRatio, index) {
+    //let audCtx = new AudioContext();
+    // create our primary oscillator
+    const carrier = this.audCtx.createOscillator();
+    carrier.type = 'sine';
+    carrier.frequency.value = frequency;
+    // create an oscillator for modulation
+    const mod = this.audCtx.createOscillator();
+    mod.type = 'sine';
+    // The FM synthesis formula states that our modulators
+    // frequency = frequency * carrier-to-modulation ratio.
+    mod.frequency.value = frequency * cmRatio;
+    const modGainNode = this.audCtx.createGain();
+    // The FM synthesis formula states that our modulators
+    // amplitude = frequency * index
+    modGainNode.gain.value = frequency * index;
+    mod.connect(modGainNode);
+    // plug the gain node into the frequency of
+    // our oscillator
+    modGainNode.connect(carrier.frequency);
+    const envelope = this.audCtx.createGain();
+    envelope.gain.linearRampToValueAtTime(1, this.audCtx.currentTime + attack);
+    envelope.gain.linearRampToValueAtTime(0, this.audCtx.currentTime + attack + decay);
+    carrier.connect(envelope);
+    envelope.connect(this.audCtx.destination);
+    mod.start(this.audCtx.currentTime);
+    carrier.start(this.audCtx.currentTime);
+    mod.stop(this.audCtx.currentTime + attack + decay);
+    carrier.stop(this.audCtx.currentTime + attack + decay);
+    //this.osc.close();
   },
   update() {
     this.animationID = requestAnimationFrame(this.update.bind(this));

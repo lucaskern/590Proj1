@@ -43,6 +43,15 @@
       font-weight: 700;
       margin: 10px 0px 20px 10px;
     }
+
+    input {
+      width: 100px;
+    }
+
+    .ui-tabs-anchor {
+      font-size: 12px;
+    }
+
   </style>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 </head>
@@ -84,7 +93,7 @@
         <label> Display Mode
           <select id="dispMode">
             <option name="aesthetics" value="aesthetics"> Aesthetic </option>
-            <option name="Conway" valye="conway"> Conway </option>
+            <option name="Conway" value="conway"> Conway </option>
           </select>
         </label>
         <li>
@@ -157,6 +166,15 @@
     </ul>
   </div>
   <div id="tabs-5">
+
+    <div style="float: left;">
+      <label> Click Effect
+        <select id="clickMode">
+          <option name="audio" value="audio"> Audio </option>
+          <option name="struct" value="struct"> Structure </option>
+        </select>
+      </label>
+    <h3> Audio Click </h3>
     <ul id="opt opt-audio">
       <li>
         <label> Freq </label>
@@ -180,7 +198,8 @@
       </li>
     </ul>
   </div>
-</div>
+    <div style="float: left;">
+    <h3> Structure Gen </h3>
     <ul>
       <li>
         <select id="shape">
@@ -189,6 +208,10 @@
         </select>
       </li>
     </ul>
+  </div>
+</div>
+</div>
+
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
