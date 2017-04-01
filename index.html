@@ -8,34 +8,34 @@
       margin: 0;
       background-color: black;
     }
-    
+
     canvas {
       padding: 0;
       margin: 10px auto auto auto;
       display: block;
       border: 2px solid black;
     }
-    
+
     .controls {
       margin: 0 auto;
       /*position: absolute;
       left: 0px;
       bottom: 0px;*/
     }
-    
+
     .controls ul {
       list-style: none;
     }
-    
+
     #tabs {
       width: 800px;
       margin-left: -400px;
       position: absolute;
       bottom: 0px;
       left: 50%;
-      
+
     }
-    
+
     label {
       width: 14%;
       color: black;
@@ -50,24 +50,25 @@
 <body>
   <canvas></canvas>
   <div class="controls">
-    
-    <ul> 
-      <li> 
+
+    <ul>
+      <li>
         <button id="play" class="ui-button ui-widget ui-corner-all"> |> </button>
         <button id="forward" class="ui-button ui-widget ui-corner-all"> >> </button>
         <button id="controls-toggle" class="ui-button ui-widget ui-corner-all"> Controls </button>
       </li>
     </ul>
-    
+
     <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Render Options</a></li>
-    <li><a href="#tabs-2">Grid Options</a></li>
-    <li><a href="#tabs-3">Cell Options</a></li>
-    <li><a href="#tabs-4">Audio Options</a></li>
+    <li><a href="#tabs-2">Color Options</a></li>
+    <li><a href="#tabs-3">Grid Options</a></li>
+    <li><a href="#tabs-4">Cell Options</a></li>
+    <li><a href="#tabs-5">Audio Options</a></li>
   </ul>
   <div id="tabs-1">
-    <ul id="tabs-1">
+    <ul id="opt opt-render">
       <li>
         <label> Color Scheme
           <select id="colorMode">
@@ -75,6 +76,7 @@
             <option name="pink" value="pink"> Pink </option>
             <option name="green" value="green"> Green </option>
             <option name="orange" value="orange"> Orange </option>
+            <option name="custom" value="custom"> Custom </option>
           </select>
         </label>
       </li>
@@ -87,15 +89,37 @@
         </label>
         <li>
         <label> Play Speed:
-          <input id="speed" name="speed" type="range" value="10" min="1" max="100">
-          <output name="speedVal" id="speedVal">10</output>
+          <input id="speed" name="speed" type="range" value="3" min="1" max="30">
+          <output name="speedVal" id="speedVal">3</output>
         </label>
       </li>
       </li>
     </ul>
   </div>
   <div id="tabs-2">
-    <ul id="opt -opt grid">
+    <ul id="opt opt-color">
+      <li>
+        <label> Hue:
+          <input id="hue" name="hue" type="range" value="100" min="0" max="360">
+          <output name="hueVal" id="hueVal">100</output>
+        </label>
+      </li>
+      <li>
+        <label> Saturation
+          <input id="saturation" type="range" value="50" min="0" max="100">
+          <output name="saturationVal" id="saturationVal">50</output>
+        </label>
+      </li>
+      <li>
+        <label> Brightness
+          <input id="bright" name="bright" type="range" value="50" min="0" max="100">
+          <output name="brightVal" id="brightVal">50</output>
+        </label>
+      </li>
+    </ul>
+  </div>
+  <div id="tabs-3">
+    <ul id="opt opt-grid">
       <li>
         <label> Cell Size:
           <input id="cellSize" name="cellSize" type="range" value="25" min="3" max="40">
@@ -116,8 +140,8 @@
       </li>
     </ul>
   </div>
-  <div id="tabs-3">
-    <ul id="opt -opt cell">
+  <div id="tabs-4">
+    <ul id="opt opt-cell">
       <li>
         <label> Max Cell Age
           <input id="maxAge" type="range" value="30" min="5" max="50">
@@ -132,8 +156,8 @@
       </li>
     </ul>
   </div>
-  <div id="tabs-4">
-    <ul id="opt -opt audio">
+  <div id="tabs-5">
+    <ul id="opt opt-audio">
       <li>
         <label> Freq </label>
         <input type="text" id="freq" value="450">

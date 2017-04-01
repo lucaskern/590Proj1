@@ -1,4 +1,3 @@
-//comment for push
 
 'use strict'
 const app = {
@@ -19,10 +18,14 @@ const app = {
   colorRate: 6, //color values for bg
   colorMode: "B&W", //color of cells
   colorVal: null,
+  hueVal: 100,
+  satVal: 50,
+  brightVal: 50,
   shape: 'flyer', //live neighbor count
-  liveCount: 0, //create an audioCtx  
+  liveCount: 0, //create an audioCtx
   audCtx: undefined, // create an oscillator
   osc: undefined,
+
   playNote(frequency, attack, decay, cmRatio, index) {
     //let audCtx = new AudioContext();
     // create our primary oscillator
@@ -32,11 +35,11 @@ const app = {
     // create an oscillator for modulation
     const mod = this.audCtx.createOscillator();
     mod.type = 'sine';
-    // The FM synthesis formula states that our modulators 
+    // The FM synthesis formula states that our modulators
     // frequency = frequency * carrier-to-modulation ratio.
     mod.frequency.value = frequency * cmRatio;
     const modGainNode = this.audCtx.createGain();
-    // The FM synthesis formula states that our modulators 
+    // The FM synthesis formula states that our modulators
     // amplitude = frequency * index
     modGainNode.gain.value = frequency * index;
     mod.connect(modGainNode);
@@ -95,9 +98,10 @@ const app = {
       this.grid[y] = [[]];
       this.temp[y] = [[]];
       for (let x = 0; x < this.width; x++) {
-        //fill with random values 
+        //fill with random values
         this.grid[y][x] = [Math.round(Math.random()), 0];
         this.temp[y][x] = [0, 0];
+
         //create border
         if (x == 0 || y == 0 || x == this.width - 1 || y == this.height - 1) {
           this.grid[y][x] = 0;
@@ -106,7 +110,6 @@ const app = {
     }
   }
   //set up value controllers
-
   ,
   getMousePos(canvas, evt) {
     var rect = this.canvas.getBoundingClientRect();
@@ -122,7 +125,7 @@ const app = {
       let decayVal = parseFloat(document.getElementById("decay").value);
       let cmVal = parseFloat(document.getElementById("cm").value);
       let indexVal = parseFloat(document.getElementById("indexV").value);
-      
+
       this.grid[yCoord][xCoord][3] = 1;
       this.grid[yCoord][xCoord][4] = freqVal;
       this.grid[yCoord][xCoord][5] = attackVal;
@@ -166,12 +169,16 @@ const app = {
       //console.log(message);
       thisRef.clickEffect(mousePos.x, mousePos.y);
     }, false);
+
+    //Constant controls
     document.querySelector("#play").onclick = function (e) {
       thisRef.play();
     };
     document.querySelector("#forward").onclick = function (e) {
       thisRef.forward();
     };
+
+    //Render options
     document.querySelector("#speed").onchange = function (e) {
       thisRef.framesLimit = e.target.value;
       document.querySelector("#speedVal").value = e.target.value;
@@ -179,6 +186,17 @@ const app = {
     document.querySelector("#colorMode").onchange = function (e) {
       thisRef.colorMode = e.target.value;
     };
+    document.querySelector("#dispMode").onchange = function (e) {
+      if (e.target.value == "aesthetics") {
+        thisRef.accurate = false;
+        thisRef.gridSetup();
+      } else {
+        thisRef.accurate = true;
+        thisRef.gridSetup();
+      }
+    };
+
+    //Grid options
     document.querySelector("#cellSize").onchange = function (e) {
       thisRef.cellSize = e.target.value;
       thisRef.gridSetup();
@@ -194,15 +212,22 @@ const app = {
       thisRef.gridSetup();
       document.querySelector("#heightVal").value = e.target.value;
     };
-    document.querySelector("#dispMode").onchange = function (e) {
-      if (e.target.value == "aesthetics") {
-        thisRef.accurate = false;
-        thisRef.gridSetup();
-      } else {
-        thisRef.accurate = true;
-        thisRef.gridSetup();
-      }
-    }
+
+    //Color options
+    document.querySelector("#hue").onchange = function (e) {
+      thisRef.hueVal = e.target.value;
+      document.querySelector("#hueVal").value = e.target.value;
+    };
+    document.querySelector("#saturation").onchange = function (e) {
+      thisRef.satVal = e.target.value;
+      document.querySelector("#saturationVal").value = e.target.value;
+    };
+    document.querySelector("#bright").onchange = function (e) {
+      thisRef.brightVal = e.target.value;
+      document.querySelector("#brightVal").value = e.target.value;
+    };
+
+    //Cell options
     document.querySelector("#maxAge").onchange = function (e) {
       thisRef.maxAge = e.target.value;
       document.querySelector("#maxAgeVal").value = e.target.value;
@@ -214,6 +239,7 @@ const app = {
     document.querySelector("#shape").onchange = function (e) {
       thisRef.shape = e.target.value;
     };
+
   },
   runAutomata() {
     // loop through every cell
@@ -316,6 +342,9 @@ const app = {
               break;
             case "B&W":
               this.ctx.fillStyle = 'hsl( 0, 0%, ' + this.colorVal + '%)';
+              break;
+            case "custom":
+              this.ctx.fillStyle = 'hsl(' + (this.hueVal / 30) * this.colorVal + ',' +  (this.satVal / 30) * this.colorVal + '%,' + (this.brightVal / 30) * this.colorVal + '%)';
           }
           if (this.grid[y][x][1] == this.maxAge - 1) {
             this.ctx.fillStyle = "red";
