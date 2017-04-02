@@ -52,6 +52,17 @@
       font-size: 12px;
     }
 
+    #info-box {
+      background-color: white;
+      padding: 10px;
+      border-radius: 0px 0px 20px 20px;
+      width: 800px;
+      margin-left: -400px;
+      position: absolute;
+      top: 0px;
+      left: 50%;
+    }
+
   </style>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 </head>
@@ -65,10 +76,24 @@
         <button id="play" class="ui-button ui-widget ui-corner-all"> |> </button>
         <button id="forward" class="ui-button ui-widget ui-corner-all"> >> </button>
         <button id="controls-toggle" class="ui-button ui-widget ui-corner-all"> Controls </button>
+        <button id="info-toggle" class="ui-button ui-widget ui-corner-all"> help </button>
       </li>
     </ul>
 
-    <div id="tabs">
+  <div id="info-box">
+    <h2> Instructions </h2>
+
+    <h3> Controls button toggles control panel </h3>
+    <p> I tried to make the controls self explanatory. Most are fine to adjust as you wish. </p>
+    <p> Cell Number: Width and Height controls will affect performance the most. Leave at default or less if your machine is slowing down. </p>
+
+    <h4> Clicking cells </h4>
+    <p> In the click effect panel you can choose if you want audio effects or to generate a set structure on click. </p>
+    <p> Set the values for the audio to play, and when you click a cell, when it reaches max age and "dies" the note will play </p>
+    <p> <strong> WARNING: Setting Max Cell Age control too low while lots of cells have audio attached can cause loud and grating sounds </strong> </p>
+  </div>
+
+  <div id="tabs">
   <ul>
     <li><a href="#tabs-1">Render Options</a></li>
     <li><a href="#tabs-2">Color Options</a></li>
@@ -85,6 +110,9 @@
             <option name="pink" value="pink"> Pink </option>
             <option name="green" value="green"> Green </option>
             <option name="orange" value="orange"> Orange </option>
+            <option name="rainbow" value="rainbow"> Rainbow </option>
+            <option name="pulseF" value="pulseF"> Pulse Fast </option>
+            <option name="pulseS" value="pulseS"> Pulse Slow </option>
             <option name="custom" value="custom"> Custom </option>
           </select>
         </label>
@@ -115,14 +143,14 @@
       </li>
       <li>
         <label> Saturation
-          <input id="saturation" type="range" value="50" min="0" max="100">
-          <output name="saturationVal" id="saturationVal">50</output>
+          <input id="saturation" type="range" value="80" min="0" max="100">
+          <output name="saturationVal" id="saturationVal">80</output>
         </label>
       </li>
       <li>
         <label> Brightness
-          <input id="bright" name="bright" type="range" value="50" min="0" max="100">
-          <output name="brightVal" id="brightVal">50</output>
+          <input id="bright" name="bright" type="range" value="12" min="0" max="100">
+          <output name="brightVal" id="brightVal">12</output>
         </label>
       </li>
     </ul>

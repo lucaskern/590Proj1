@@ -16,11 +16,12 @@ const app = {
   cellSize: 25, //max amount of times a cell can be consecutively alive before dying.
   maxAge: 30, //how fast it changes color (higher : quicker)
   colorRate: 6, //color values for bg
-  colorMode: "B&W", //color of cells
+  colorMode: "green", //color of cells
   colorVal: null,
   hueVal: 100,
-  satVal: 50,
-  brightVal: 50,
+  satVal: 80,
+  brightVal: 12,
+  slowCount: 0,
   border: true,
   lineW: 1,
   shape: 'flyer', //live neighbor count
@@ -337,7 +338,16 @@ const app = {
             this.ctx.fillStyle = 'hsl( 0, 0%, ' + this.grid[y][x][10] + '%)';
             break;
           case "custom":
-            this.ctx.fillStyle = 'hsl(' + (this.hueVal / 30) * this.grid[y][x][10] + ',' +  (this.satVal / 30) * this.grid[y][x][10] + '%,' + (this.brightVal / 30) * this.grid[y][x][10] + '%)';
+            this.ctx.fillStyle = 'hsl(' + this.hueVal + ',' +  (this.satVal / 30) * this.grid[y][x][10] + '%,' + (this.brightVal / 30) * this.grid[y][x][10] + '%)';
+            break;
+          case "rainbow":
+            this.ctx.fillStyle = 'hsl(' + this.hueVal + ',' +  (this.satVal / 30) * this.grid[y][x][10] + '%,' + (this.brightVal / 30) * this.grid[y][x][10] + '%)';
+            this.hueVal++;
+            break;
+          case "pulseF":
+          case "pulseS":
+              this.ctx.fillStyle = 'hsl(' + this.hueVal + ',' +  (this.satVal / 30) * this.grid[y][x][10] + '%,' + (this.brightVal / 30) * this.grid[y][x][10] + '%)';
+              break;
           }
 
         if (this.grid[y][x][0] == 1) {
@@ -360,6 +370,18 @@ const app = {
           this.ctx.fillStyle = "black";
           //this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
         }
+      }
+
+      if (this.colorMode == 'pulseF') {
+        this.hueVal++;
+      } else if (this.colorMode == 'pulseS') {
+        this.slowCount++;
+
+        if (this.slowCount > 30) {
+          this.hueVal++;
+          this.slowCount = 0;
+        }
+
       }
     }
     //run round of cell calculations
