@@ -40,6 +40,7 @@ const app = {
   accurate: false,
   playBool: true,
   audioClick: true,
+  glitch: false,
   frames: 100,
   framesLimit: 3,
   grid: [],
@@ -48,6 +49,7 @@ const app = {
   height: 30, //size of each cell in px
   cellSize: 25, //max amount of times a cell can be consecutively alive before dying.
   maxAge: 30, //how fast it changes color (higher : quicker)
+  bgOpacity: 0.1,
   colorRate: 6, //color values for bg
   colorMode: "green", //color of cells
   colorVal: null,
@@ -69,8 +71,6 @@ const app = {
     this.canvas.width = this.width * this.cellSize;
     this.canvas.height = this.height * this.cellSize;
     this.ctx = this.canvas.getContext('2d');
-
-
 
     //set up controls
     this.controls();
@@ -188,8 +188,9 @@ const app = {
       thisRef.framesLimit = e.target.value;
       document.querySelector("#speedVal").value = e.target.value;
     };
-    document.querySelector("#colorMode").onchange = function (e) {
-      thisRef.colorMode = e.target.value;
+    document.querySelector("#bgOpacity").onchange = function (e) {
+      thisRef.bgOpacity = e.target.value / 100;
+      document.querySelector("#opacityVal").value = e.target.value;
     };
     document.querySelector("#dispMode").onchange = function (e) {
       if (e.target.value == "aesthetics") {
@@ -200,8 +201,19 @@ const app = {
         thisRef.gridSetup();
       }
     };
+    document.querySelector("#glitch").onchange = function (e) {
+      if (e.target.checked) {
+        thisRef.glitch = true;
+      } else {
+        thisRef.glitch = false;
+      }
+      //console.log(this.glitch);
+    };
 
     //Color options
+    document.querySelector("#colorMode").onchange = function (e) {
+      thisRef.colorMode = e.target.value;
+    };
     document.querySelector("#hue").onchange = function (e) {
       thisRef.hueVal = e.target.value;
       document.querySelector("#hueVal").value = e.target.value;
@@ -346,7 +358,7 @@ const app = {
   },
   draw() {
     //BG color, alpha is important
-    this.ctx.fillStyle = 'rgba(0, 0, 0, .3)';
+    this.ctx.fillStyle = 'rgba(0, 0, 0,' + this.bgOpacity + ')';
     this.ctx.fillRect(0, 0, this.width * this.cellSize, this.height * this.cellSize);
     //this.ctx.fillStyle = 'black';
 
@@ -390,13 +402,37 @@ const app = {
             this.ctx.fillStyle = 'hsl( 124, 100%, 60%)';
             //console.log(this.grid[y][x]);
           }
-          //fill and stroke rects
-          this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
 
+          if (this.glitch) {
+            if (this.getRandomInt(0,1) == 1) {
+              let dir = this.getRandomInt(0,3);
+              let moveAmt = this.getRandomInt(1, 5);
+              switch(dir) {
+                case 0:
+                this.ctx.fillRect(x * this.cellSize, (y * this.cellSize) - moveAmt, this.cellSize, this.cellSize);
+                break;
+                case 1:
+                this.ctx.fillRect((x * this.cellSize) + moveAmt, y * this.cellSize, this.cellSize, this.cellSize);
+                break;
+                case 2:
+                this.ctx.fillRect(x * this.cellSize, (y * this.cellSize) + moveAmt, this.cellSize, this.cellSize);
+                break;
+                case 3:
+                this.ctx.fillRect((x * this.cellSize) - moveAmt, y * this.cellSize, this.cellSize, this.cellSize);
+                break;
+              }
+            }
 
-          if (this.border) {
-            this.ctx.strokeRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+            console.log('glitch ran');
+          } else {
+            //fill and stroke rects
+            this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+
+            if (this.border) {
+              this.ctx.strokeRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+            }
           }
+
         }
         //make border
         else if (x == 0 || y == 0 || x == this.width - 1 || y == this.height - 1) {
@@ -475,6 +511,10 @@ const app = {
     } else if (!this.playBool) {}
     //stop tracking fps
     //window.requestAnimationFrame(update);
+  },
+
+  getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
   }
 }
 module.exports = app;

@@ -33,7 +33,6 @@
       position: absolute;
       bottom: 0px;
       left: 50%;
-
     }
 
     label {
@@ -62,7 +61,6 @@
       top: 0px;
       left: 50%;
     }
-
   </style>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 </head>
@@ -80,171 +78,182 @@
       </li>
     </ul>
 
-  <div id="info-box">
-    <h2> Instructions </h2>
+    <div id="info-box">
+      <h2> Instructions </h2>
 
-    <h3> Controls button toggles control panel </h3>
-    <p> I tried to make the controls self explanatory. Most are fine to adjust as you wish. </p>
-    <p> Cell Number: Width and Height controls will affect performance the most. Leave at default or less if your machine is slowing down. </p>
+      <h3> Controls button toggles control panel </h3>
+      <p> I tried to make the controls self explanatory. Most are fine to adjust as you wish. </p>
+      <p> Cell Number: Width and Height controls will affect performance the most. Leave at default or less if your machine is slowing down. </p>
 
-    <h4> Clicking cells </h4>
-    <p> In the click effect panel you can choose if you want audio effects or to generate a set structure on click. </p>
-    <p> Set the values for the audio to play, and when you click a cell, when it reaches max age and "dies" the note will play </p>
-    <p> <strong> WARNING: Setting Max Cell Age control too low while lots of cells have audio attached can cause loud and grating sounds </strong> </p>
-  </div>
+      <h4> Clicking cells </h4>
+      <p> In the click effect panel you can choose if you want audio effects or to generate a set structure on click. </p>
+      <p> Set the values for the audio to play, and when you click a cell, when it reaches max age and "dies" the note will play </p>
+      <p> <strong> WARNING: Setting Max Cell Age control too low while lots of cells have audio attached can cause loud and grating sounds </strong> </p>
+    </div>
 
-  <div id="tabs">
-  <ul>
-    <li><a href="#tabs-1">Render Options</a></li>
-    <li><a href="#tabs-2">Color Options</a></li>
-    <li><a href="#tabs-3">Grid Options</a></li>
-    <li><a href="#tabs-4">Cell Options</a></li>
-    <li><a href="#tabs-5">Audio Options</a></li>
-  </ul>
-  <div id="tabs-1">
-    <ul id="opt opt-render">
-      <li>
-        <label> Color Scheme
-          <select id="colorMode">
-            <option name="B&W" value="B&W"> B&W </option>
-            <option name="pink" value="pink"> Pink </option>
-            <option name="green" value="green"> Green </option>
-            <option name="orange" value="orange"> Orange </option>
-            <option name="rainbow" value="rainbow"> Rainbow </option>
-            <option name="pulseF" value="pulseF"> Pulse Fast </option>
-            <option name="pulseS" value="pulseS"> Pulse Slow </option>
-            <option name="custom" value="custom"> Custom </option>
-          </select>
-        </label>
-      </li>
-      <li>
-        <label> Display Mode
-          <select id="dispMode">
-            <option name="aesthetics" value="aesthetics"> Aesthetic </option>
-            <option name="Conway" value="conway"> Conway </option>
-          </select>
-        </label>
-        <li>
-        <label> Play Speed:
-          <input id="speed" name="speed" type="range" value="3" min="1" max="30">
-          <output name="speedVal" id="speedVal">3</output>
-        </label>
-      </li>
-      </li>
-    </ul>
-  </div>
-  <div id="tabs-2">
-    <ul id="opt opt-color">
-      <li>
-        <label> Hue:
-          <input id="hue" name="hue" type="range" value="100" min="0" max="360">
-          <output name="hueVal" id="hueVal">100</output>
-        </label>
-      </li>
-      <li>
-        <label> Saturation
-          <input id="saturation" type="range" value="80" min="0" max="100">
-          <output name="saturationVal" id="saturationVal">80</output>
-        </label>
-      </li>
-      <li>
-        <label> Brightness
-          <input id="bright" name="bright" type="range" value="12" min="0" max="100">
-          <output name="brightVal" id="brightVal">12</output>
-        </label>
-      </li>
-    </ul>
-  </div>
-  <div id="tabs-3">
-    <ul id="opt opt-grid">
-      <li>
-        <label> Cell Size:
-          <input id="cellSize" name="cellSize" type="range" value="25" min="3" max="40">
-          <output name="cellSizeVal" id="cellSizeVal">25</output>
-        </label>
-      </li>
-      <li>
-        <label> Cell Num: Width
-          <input id="width" type="range" value="60" min="20" max="200">
-          <output name="widthVal" id="widthVal">60</output>
-        </label>
-      </li>
-      <li>
-        <label> Cell Num: Height
-          <input id="height" name="height" type="range" value="30" min="20" max="120">
-          <output name="heightVal" id="heightVal">30</output>
-        </label>
-      </li>
-    </ul>
-  </div>
-  <div id="tabs-4">
-    <ul id="opt opt-cell">
-      <li>
-        <label> Max Cell Age
-          <input id="maxAge" type="range" value="30" min="5" max="50">
-          <output name="maxAgeVal" id="maxAgeVal">30</output>
-        </label>
-      </li>
-      <li>
-        <label> Color Change Rate
-          <input id="colorRate" type="range" value="6" min="0" max="50">
-          <output name="colorRateVal" id="colorRateVal">6</output>
-        </label>
-      </li>
-      <li>
-        <label> Border Width
-          <input id="border" name="border" type="range" value="1" min="0" max="20">
-          <output name="borderVal" id="borderVal">1</output>
-        </label>
-      </li>
-    </ul>
-  </div>
-  <div id="tabs-5">
+    <div id="tabs">
+      <ul>
+        <li><a href="#tabs-1">Render Options</a></li>
+        <li><a href="#tabs-2">Color Options</a></li>
+        <li><a href="#tabs-3">Grid Options</a></li>
+        <li><a href="#tabs-4">Cell Options</a></li>
+        <li><a href="#tabs-5">Click Options</a></li>
+      </ul>
+      <div id="tabs-1">
+        <ul id="opt opt-render">
+          <li>
+            <label> Display Mode
+              <select id="dispMode">
+                <option name="aesthetics" value="aesthetics"> Aesthetic </option>
+                <option name="Conway" value="conway"> Conway </option>
+              </select>
+            </label>
+            <li>
+              <label> Opacity
+                <input id="bgOpacity" name="opacity" type="range" value="30" min="0" max="100">
+                <output name="opacityVal" id="opacityVal">30</output>
+              </label>
+            </li>
+          </li>
+          <li>
+            <label> Play Speed:
+              <input id="speed" name="speed" type="range" value="3" min="1" max="30">
+              <output name="speedVal" id="speedVal">3</output>
+            </label>
+          </li>
+          <li>
+            <label> Glitch:
+              <input type="checkbox" id="glitch">
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div id="tabs-2">
+        <ul id="opt opt-color">
+          <li>
+            <label> Color Scheme
+              <select id="colorMode">
+                <option name="B&W" value="B&W"> B&W </option>
+                <option name="pink" value="pink"> Pink </option>
+                <option name="green" value="green" selected="true"> Green </option>
+                <option name="orange" value="orange"> Orange </option>
+                <option name="rainbow" value="rainbow"> Rainbow </option>
+                <option name="pulseF" value="pulseF"> Pulse Fast </option>
+                <option name="pulseS" value="pulseS"> Pulse Slow </option>
+                <option name="custom" value="custom"> Custom </option>
+              </select>
+            </label>
+          </li>
+          <li>
+            <label> Hue:
+              <input id="hue" name="hue" type="range" value="100" min="0" max="360">
+              <output name="hueVal" id="hueVal">100</output>
+            </label>
+          </li>
+          <li>
+            <label> Saturation
+              <input id="saturation" type="range" value="80" min="0" max="100">
+              <output name="saturationVal" id="saturationVal">80</output>
+            </label>
+          </li>
+          <li>
+            <label> Brightness
+              <input id="bright" name="bright" type="range" value="12" min="0" max="100">
+              <output name="brightVal" id="brightVal">12</output>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div id="tabs-3">
+        <ul id="opt opt-grid">
+          <li>
+            <label> Cell Size:
+              <input id="cellSize" name="cellSize" type="range" value="25" min="3" max="40">
+              <output name="cellSizeVal" id="cellSizeVal">25</output>
+            </label>
+          </li>
+          <li>
+            <label> Cell Num: Width
+              <input id="width" type="range" value="60" min="20" max="200">
+              <output name="widthVal" id="widthVal">60</output>
+            </label>
+          </li>
+          <li>
+            <label> Cell Num: Height
+              <input id="height" name="height" type="range" value="30" min="20" max="120">
+              <output name="heightVal" id="heightVal">30</output>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div id="tabs-4">
+        <ul id="opt opt-cell">
+          <li>
+            <label> Max Cell Age
+              <input id="maxAge" type="range" value="30" min="5" max="50">
+              <output name="maxAgeVal" id="maxAgeVal">30</output>
+            </label>
+          </li>
+          <li>
+            <label> Color Change Rate
+              <input id="colorRate" type="range" value="6" min="0" max="50">
+              <output name="colorRateVal" id="colorRateVal">6</output>
+            </label>
+          </li>
+          <li>
+            <label> Border Width
+              <input id="border" name="border" type="range" value="1" min="0" max="20">
+              <output name="borderVal" id="borderVal">1</output>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div id="tabs-5">
 
-    <div style="float: left;">
-      <label> Click Effect
-        <select id="clickMode">
-          <option name="audio" value="audio"> Audio </option>
-          <option name="struct" value="struct"> Structure </option>
-        </select>
-      </label>
-    <h3> Audio Click </h3>
-    <ul id="opt opt-audio">
-      <li>
-        <label> Freq </label>
-        <input type="text" id="freq" value="450">
-      </li>
-      <li>
-        <label> Attack </label>
-        <input type="text" id="attack" value=".01">
-      </li>
-      <li>
-        <label> Decay </label>
-        <input type="text" id="decay" value=".6">
-      </li>
-      <li>
-        <label> CmRatio </label>
-        <input type="text" id="cm" value="4">
-      </li>
-      <li>
-        <label> Index </label>
-        <input type="text" id="indexV" value="1.45">
-      </li>
-    </ul>
-  </div>
-    <div style="float: left;">
-    <h3> Structure Gen </h3>
-    <ul>
-      <li>
-        <select id="shape">
-          <option> flyer </option>
-          <option> blinker </option>
-        </select>
-      </li>
-    </ul>
-  </div>
-</div>
-</div>
+        <div style="float: left;">
+          <label> Click Effect
+            <select id="clickMode">
+              <option name="audio" value="audio"> Audio </option>
+              <option name="struct" value="struct"> Structure </option>
+            </select>
+          </label>
+          <h3> Audio Click </h3>
+          <ul id="opt opt-audio">
+            <li>
+              <label> Freq </label>
+              <input type="text" id="freq" value="450">
+            </li>
+            <li>
+              <label> Attack </label>
+              <input type="text" id="attack" value=".01">
+            </li>
+            <li>
+              <label> Decay </label>
+              <input type="text" id="decay" value=".6">
+            </li>
+            <li>
+              <label> CmRatio </label>
+              <input type="text" id="cm" value="4">
+            </li>
+            <li>
+              <label> Index </label>
+              <input type="text" id="indexV" value="1.45">
+            </li>
+          </ul>
+        </div>
+        <div style="float: left;">
+          <h3> Structure Gen </h3>
+          <ul>
+            <li>
+              <select id="shape">
+                <option> flyer </option>
+                <option> blinker </option>
+              </select>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
