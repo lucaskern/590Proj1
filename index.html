@@ -67,6 +67,8 @@
 
 <body>
   <canvas></canvas>
+  <img src="water.png" id="water" width="40px" height="40px" style="display: none;">
+
   <div class="controls">
 
     <ul>
@@ -110,7 +112,7 @@
             </label>
             <li>
               <label> Opacity
-                <input id="bgOpacity" name="opacity" type="range" value="30" min="0" max="100">
+                <input id="bgOpacity" name="opacity" type="range" step="10" value="30" min="0" max="100">
                 <output name="opacityVal" id="opacityVal">30</output>
               </label>
             </li>

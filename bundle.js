@@ -49,7 +49,7 @@ const app = {
   height: 30, //size of each cell in px
   cellSize: 25, //max amount of times a cell can be consecutively alive before dying.
   maxAge: 30, //how fast it changes color (higher : quicker)
-  bgOpacity: 0.1,
+  bgOpacity: 0.3,
   colorRate: 6, //color values for bg
   colorMode: "green", //color of cells
   colorVal: null,
@@ -63,6 +63,7 @@ const app = {
   liveCount: 0, //create an audioCtx
   audCtx: undefined, // create an oscillator
   osc: undefined,
+  waterImg: undefined,
 
   init() {
     console.log("app.main.init() called");
@@ -71,6 +72,8 @@ const app = {
     this.canvas.width = this.width * this.cellSize;
     this.canvas.height = this.height * this.cellSize;
     this.ctx = this.canvas.getContext('2d');
+
+    this.waterImg = document.querySelector("#water");
 
     //set up controls
     this.controls();
@@ -405,28 +408,29 @@ const app = {
 
           if (this.glitch) {
             if (this.getRandomInt(0,1) == 1) {
-              let dir = this.getRandomInt(0,3);
-              let moveAmt = this.getRandomInt(1, 5);
+              let dir = this.getRandomInt(0,1);
+              let moveAmt = this.getRandomInt(1, 2);
               switch(dir) {
                 case 0:
-                this.ctx.fillRect(x * this.cellSize, (y * this.cellSize) - moveAmt, this.cellSize, this.cellSize);
+                this.ctx.fillRect((x * this.cellSize) - moveAmt, y * this.cellSize, this.cellSize, this.cellSize);
                 break;
                 case 1:
                 this.ctx.fillRect((x * this.cellSize) + moveAmt, y * this.cellSize, this.cellSize, this.cellSize);
                 break;
-                case 2:
-                this.ctx.fillRect(x * this.cellSize, (y * this.cellSize) + moveAmt, this.cellSize, this.cellSize);
-                break;
-                case 3:
-                this.ctx.fillRect((x * this.cellSize) - moveAmt, y * this.cellSize, this.cellSize, this.cellSize);
-                break;
+                // case 2:
+                // this.ctx.fillRect(x * this.cellSize, (y * this.cellSize) + moveAmt, this.cellSize, this.cellSize);
+                // break;
+                // case 3:
+                // this.ctx.fillRect((x * this.cellSize) - moveAmt, y * this.cellSize, this.cellSize, this.cellSize);
+                // break;
               }
             }
 
-            console.log('glitch ran');
+            //console.log('glitch ran');
           } else {
             //fill and stroke rects
             this.ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
+            //this.ctx.drawImage(this.waterImg,x * this.cellSize,y * this.cellSize, this.cellSize, this.cellSize);
 
             if (this.border) {
               this.ctx.strokeRect(x * this.cellSize, y * this.cellSize, this.cellSize, this.cellSize);
