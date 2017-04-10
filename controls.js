@@ -1,13 +1,15 @@
 $( function() {
     $( "#tabs" ).tabs();
 
+    $( "canvas" ).fadeIn( 1000, function() {});
+    
     $("#controls-toggle").click(function() {
-        $("#tabs").toggle();
+        $("#tabs").slideToggle( "slow", function() {});
     });
 
     $("#info-box").hide();
 
     $("#info-toggle").click(function() {
-      $("#info-box").toggle();
+      $("#info-box").slideToggle( "slow", function() {});
     });
   } );

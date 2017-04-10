@@ -7,12 +7,13 @@
     body {
       margin: 0;
       background-color: black;
+      overflow: hidden;
     }
 
     canvas {
       padding: 0;
       margin: 10px auto auto auto;
-      display: block;
+      display: none;
       border: 2px solid black;
     }
 
@@ -34,6 +35,10 @@
       bottom: 0px;
       left: 50%;
     }
+    
+    #tabs button {
+      text-align: center;
+    }
 
     label {
       width: 14%;
@@ -50,6 +55,11 @@
     .ui-tabs-anchor {
       font-size: 12px;
     }
+    
+    #info-toggle, #controls-toggle {
+      background: black;
+      color: white;
+    }
 
     #info-box {
       background-color: white;
@@ -60,6 +70,15 @@
       position: absolute;
       top: 0px;
       left: 50%;
+      font-family: sans-serif;
+    }
+    
+    #structure {
+      display: none;
+    }
+    
+    h2 {
+      text-align: center;
     }
   </style>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
@@ -70,27 +89,29 @@
   <img src="water.png" id="water" width="40px" height="40px" style="display: none;">
 
   <div class="controls">
-
     <ul>
       <li>
-        <button id="play" class="ui-button ui-widget ui-corner-all"> |> </button>
-        <button id="forward" class="ui-button ui-widget ui-corner-all"> >> </button>
         <button id="controls-toggle" class="ui-button ui-widget ui-corner-all"> Controls </button>
-        <button id="info-toggle" class="ui-button ui-widget ui-corner-all"> help </button>
+        <button id="info-toggle" class="ui-button ui-widget ui-corner-all"> Help </button>
       </li>
     </ul>
 
     <div id="info-box">
-      <h2> Instructions </h2>
+      <h2> Cellular Automata Visualizer </h2>
 
-      <h3> Controls button toggles control panel </h3>
-      <p> I tried to make the controls self explanatory. Most are fine to adjust as you wish. </p>
-      <p> Cell Number: Width and Height controls will affect performance the most. Leave at default or less if your machine is slowing down. </p>
+      <h3> To Use </h3>
+      <p> "Controls" and "Help" buttons to toggle relevant panels. </p>
+      <p> Controls are categorized by what they affect. Hover over the tabs or controls to see what they do. </p>
+      
+      <h3> Click Effects </h3>
+      <p> Depending on the selected mode, clicking the grid will either:</p>
+      <p> Generate a structure at the clicked cell. This only works well in Conway mode. </p>
+      <p> Set that cell to play a note (based on inputted values) when it dies. </p>
+      
+      <h3> !Warning! </h3>
+      <p> Changing the following settings can result in major performance drops on slower machines. </p>
+      <p> Cell Num (Width or Height), Max Cell Age (Lower is slower and will result in a lot of sound being generated), Opacity (lower is slower). </p>
 
-      <h4> Clicking cells </h4>
-      <p> In the click effect panel you can choose if you want audio effects or to generate a set structure on click. </p>
-      <p> Set the values for the audio to play, and when you click a cell, when it reaches max age and "dies" the note will play </p>
-      <p> <strong> WARNING: Setting Max Cell Age control too low while lots of cells have audio attached can cause loud and grating sounds </strong> </p>
     </div>
 
     <div id="tabs">
@@ -103,6 +124,18 @@
       </ul>
       <div id="tabs-1">
         <ul id="opt opt-render">
+          <li>
+            <label> Play/Frame Forward
+            <button id="play" class="ui-button ui-widget ui-corner-all"> |> </button>
+            <button id="forward" class="ui-button ui-widget ui-corner-all"> >> </button>
+            </label>
+              </li>
+        <li>
+            <label> Play Speed:
+              <input id="speed" name="speed" type="range" value="3" min="1" max="30">
+              <output name="speedVal" id="speedVal">3</output>
+            </label>
+          </li>
           <li>
             <label> Display Mode
               <select id="dispMode">
@@ -117,12 +150,7 @@
               </label>
             </li>
           </li>
-          <li>
-            <label> Play Speed:
-              <input id="speed" name="speed" type="range" value="3" min="1" max="30">
-              <output name="speedVal" id="speedVal">3</output>
-            </label>
-          </li>
+          
           <li>
             <label> Glitch:
               <input type="checkbox" id="glitch">
@@ -137,10 +165,10 @@
               <select id="colorMode">
                 <option name="B&W" value="B&W"> B&W </option>
                 <option name="pink" value="pink"> Pink </option>
-                <option name="green" value="green" selected="true"> Green </option>
+                <option name="green" value="green" > Green </option>
                 <option name="orange" value="orange"> Orange </option>
                 <option name="rainbow" value="rainbow"> Rainbow </option>
-                <option name="pulseF" value="pulseF"> Pulse Fast </option>
+                <option name="pulseF" value="pulseF" selected="true"> Pulse Fast </option>
                 <option name="pulseS" value="pulseS"> Pulse Slow </option>
                 <option name="custom" value="custom"> Custom </option>
               </select>
@@ -154,14 +182,14 @@
           </li>
           <li>
             <label> Saturation
-              <input id="saturation" type="range" value="80" min="0" max="100">
-              <output name="saturationVal" id="saturationVal">80</output>
+              <input id="saturation" type="range" value="8" min="0" max="100">
+              <output name="saturationVal" id="saturationVal">8</output>
             </label>
           </li>
           <li>
             <label> Brightness
-              <input id="bright" name="bright" type="range" value="12" min="0" max="100">
-              <output name="brightVal" id="brightVal">12</output>
+              <input id="bright" name="bright" type="range" value="8" min="0" max="100">
+              <output name="brightVal" id="brightVal">8</output>
             </label>
           </li>
         </ul>
@@ -212,16 +240,27 @@
       </div>
       <div id="tabs-5">
 
-        <div style="float: left;">
+        <div>
           <label> Click Effect
             <select id="clickMode">
               <option name="audio" value="audio"> Audio </option>
               <option name="struct" value="struct"> Structure </option>
             </select>
           </label>
+          <div id="audio-box"> 
           <h3> Audio Click </h3>
           <ul id="opt opt-audio">
-            <li>
+            <li> 
+              <label> Instrument
+              <select id="instrument">
+                <option name="piano" value="piano"> Piano </option>
+                <option name="glockenspiel" value="glockenspiel"> Glockenspiel </option>
+                <option name="gong" value="gong" > Gong </option>
+                <option name="marimba" value="marimba" > Marimba </option>
+              </select>
+            </label>
+            </li>
+            <!--<li>
               <label> Freq </label>
               <input type="text" id="freq" value="450">
             </li>
@@ -240,19 +279,18 @@
             <li>
               <label> Index </label>
               <input type="text" id="indexV" value="1.45">
-            </li>
+            </li>-->
+            
           </ul>
+            </div>
         </div>
-        <div style="float: left;">
+        <div id="structure">
           <h3> Structure Gen </h3>
-          <ul>
-            <li>
               <select id="shape">
                 <option> flyer </option>
                 <option> blinker </option>
               </select>
-            </li>
-          </ul>
+          <p> Works best in "Conway" mode (change in render settings)</p>
         </div>
       </div>
     </div>
