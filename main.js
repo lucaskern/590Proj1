@@ -26,7 +26,7 @@ const app = {
     , border: true
     , lineW: 1
     , instrument: 'gong'
-    , sound: true
+    , sound: false
     , shape: 'flyer', //live neighbor count
     liveCount: 0, //create an audioCtx
     audCtx: undefined, // create an oscillator
