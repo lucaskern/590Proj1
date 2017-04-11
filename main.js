@@ -25,12 +25,12 @@ const app = {
     , slowCount: 0
     , border: true
     , lineW: 1
-    , instrument: 'piano'
+    , instrument: 'gong'
+    , sound: true
     , shape: 'flyer', //live neighbor count
     liveCount: 0, //create an audioCtx
     audCtx: undefined, // create an oscillator
     osc: undefined
-    , waterImg: undefined
     , init() {
       console.log("app.main.init() called");
       // initialize properties
@@ -38,7 +38,6 @@ const app = {
       this.canvas.width = this.width * this.cellSize;
       this.canvas.height = this.height * this.cellSize;
       this.ctx = this.canvas.getContext('2d');
-      this.waterImg = document.querySelector("#water");
       //set up controls
       this.controls();
       console.log("init ran");
@@ -242,6 +241,14 @@ const app = {
       document.querySelector("#instrument").onchange = function (e) {
         thisRef.instrument = e.target.value;
       };
+      document.querySelector("#mute").onchange = function (e) {
+        if (e.target.value == "mute") {
+          thisRef.sound = false;
+        }
+        else {
+          thisRef.sound = true;
+        }
+      };
       document.querySelector("#shape").onchange = function (e) {
         thisRef.shape = e.target.value;
       };
@@ -302,10 +309,7 @@ const app = {
                 this.playNote(cell[4], cell[5], cell[6], cell[7], cell[8]);
               }
               else {
-                //play note on death from old age
-                // freq, attack, decay, ratio, index
-                //this.playNote(700, .1, 1, 3 / 2, 1.5);
-                //this.playNote(x * 50, .044, 1.411, 3.5307, 1);
+                if (this.sound) {
                 switch (this.instrument) {
                 case "piano":
                   this.playNote(x * 50, .044, 1.411, 3.5307, 1);
@@ -320,6 +324,7 @@ const app = {
                   this.playNote(x * 20, .06, 0.5, 4, 2);
                   break;
                 }
+                } 
               }
               }
             }
@@ -412,7 +417,6 @@ const app = {
               else {
                 //fill and stroke rects
                 this.ctx.fillRect((x - 1) * this.cellSize, (y - 1) * this.cellSize, this.cellSize, this.cellSize);
-                //this.ctx.drawImage(this.waterImg,x * this.cellSize,y * this.cellSize, this.cellSize, this.cellSize);
                 if (this.border) {
                   this.ctx.strokeRect((x - 1) * this.cellSize, (y - 1) * this.cellSize, this.cellSize, this.cellSize);
                 }

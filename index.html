@@ -9,25 +9,25 @@
       background-color: black;
       overflow: hidden;
     }
-
+    
     canvas {
       padding: 0;
       margin: 10px auto auto auto;
       display: none;
       border: 2px solid black;
     }
-
+    
     .controls {
       margin: 0 auto;
       /*position: absolute;
       left: 0px;
       bottom: 0px;*/
     }
-
+    
     .controls ul {
       list-style: none;
     }
-
+    
     #tabs {
       width: 800px;
       margin-left: -400px;
@@ -39,7 +39,7 @@
     #tabs button {
       text-align: center;
     }
-
+    
     label {
       width: 14%;
       color: black;
@@ -47,20 +47,27 @@
       font-weight: 700;
       margin: 10px 0px 20px 10px;
     }
-
+    
     input {
       width: 100px;
     }
-
+    
     .ui-tabs-anchor {
       font-size: 12px;
     }
     
-    #info-toggle, #controls-toggle {
-      background: black;
-      color: white;
+    #info-toggle,
+    #controls-toggle {
+      background: rgba(0, 0, 0, 0.4);
+      color: rgba(255, 255, 255, 0.4);
+      position: absolute;
+      bottom: 0px;
     }
-
+    
+    #controls-toggle {
+      left: 120px;
+    }
+    
     #info-box {
       background-color: white;
       padding: 10px;
@@ -81,13 +88,10 @@
       text-align: center;
     }
   </style>
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-</head>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css"> </head>
 
 <body>
   <canvas></canvas>
-  <img src="water.png" id="water" width="40px" height="40px" style="display: none;">
-
   <div class="controls">
     <ul>
       <li>
@@ -95,25 +99,19 @@
         <button id="info-toggle" class="ui-button ui-widget ui-corner-all"> Help </button>
       </li>
     </ul>
-
     <div id="info-box">
       <h2> Cellular Automata Visualizer </h2>
-
       <h3> To Use </h3>
       <p> "Controls" and "Help" buttons to toggle relevant panels. </p>
       <p> Controls are categorized by what they affect. Hover over the tabs or controls to see what they do. </p>
-      
       <h3> Click Effects </h3>
       <p> Depending on the selected mode, clicking the grid will either:</p>
       <p> Generate a structure at the clicked cell. This only works well in Conway mode. </p>
       <p> Set that cell to play a note (based on inputted values) when it dies. </p>
-      
       <h3> !Warning! </h3>
       <p> Changing the following settings can result in major performance drops on slower machines. </p>
       <p> Cell Num (Width or Height), Max Cell Age (Lower is slower and will result in a lot of sound being generated), Opacity (lower is slower). </p>
-
     </div>
-
     <div id="tabs">
       <ul>
         <li><a href="#tabs-1">Render Options</a></li>
@@ -126,14 +124,8 @@
         <ul id="opt opt-render">
           <li>
             <label> Play/Frame Forward
-            <button id="play" class="ui-button ui-widget ui-corner-all"> |> </button>
-            <button id="forward" class="ui-button ui-widget ui-corner-all"> >> </button>
-            </label>
-              </li>
-        <li>
-            <label> Play Speed:
-              <input id="speed" name="speed" type="range" value="3" min="1" max="30">
-              <output name="speedVal" id="speedVal">3</output>
+              <button id="play" class="ui-button ui-widget ui-corner-all"> |> </button>
+              <button id="forward" class="ui-button ui-widget ui-corner-all"> >> </button>
             </label>
           </li>
           <li>
@@ -143,18 +135,30 @@
                 <option name="Conway" value="conway"> Conway </option>
               </select>
             </label>
-            <li>
-              <label> Opacity
-                <input id="bgOpacity" name="opacity" type="range" step="10" value="30" min="0" max="100">
-                <output name="opacityVal" id="opacityVal">30</output>
-              </label>
-            </li>
           </li>
-          
+          <li>
+            <label> Sound 
+            <select id="mute">
+                <option> Play Audio </option>
+                <option value="mute"> Mute </option>
+              </select>
+              </label>
+          </li>
+          <li>
+            <label> Play Speed:
+              <input id="speed" name="speed" type="range" value="3" min="1" max="30">
+              <output name="speedVal" id="speedVal">3</output>
+            </label>
+          </li>
+          <li>
+            <label> Opacity
+              <input id="bgOpacity" name="opacity" type="range" step="10" value="30" min="0" max="100">
+              <output name="opacityVal" id="opacityVal">30</output>
+            </label>
+          </li>
           <li>
             <label> Glitch:
-              <input type="checkbox" id="glitch">
-            </label>
+              <input type="checkbox" id="glitch"> </label>
           </li>
         </ul>
       </div>
@@ -165,7 +169,7 @@
               <select id="colorMode">
                 <option name="B&W" value="B&W"> B&W </option>
                 <option name="pink" value="pink"> Pink </option>
-                <option name="green" value="green" > Green </option>
+                <option name="green" value="green"> Green </option>
                 <option name="orange" value="orange"> Orange </option>
                 <option name="rainbow" value="rainbow"> Rainbow </option>
                 <option name="pulseF" value="pulseF" selected="true"> Pulse Fast </option>
@@ -239,7 +243,6 @@
         </ul>
       </div>
       <div id="tabs-5">
-
         <div>
           <label> Click Effect
             <select id="clickMode">
@@ -247,54 +250,47 @@
               <option name="struct" value="struct"> Structure </option>
             </select>
           </label>
-          <div id="audio-box"> 
-          <h3> Audio Click </h3>
-          <ul id="opt opt-audio">
-            <li> 
-              <label> Instrument
-              <select id="instrument">
-                <option name="piano" value="piano"> Piano </option>
-                <option name="glockenspiel" value="glockenspiel"> Glockenspiel </option>
-                <option name="gong" value="gong" > Gong </option>
-                <option name="marimba" value="marimba" > Marimba </option>
-              </select>
-            </label>
-            </li>
-            <!--<li>
-              <label> Freq </label>
-              <input type="text" id="freq" value="450">
-            </li>
-            <li>
-              <label> Attack </label>
-              <input type="text" id="attack" value=".01">
-            </li>
-            <li>
-              <label> Decay </label>
-              <input type="text" id="decay" value=".6">
-            </li>
-            <li>
-              <label> CmRatio </label>
-              <input type="text" id="cm" value="4">
-            </li>
-            <li>
-              <label> Index </label>
-              <input type="text" id="indexV" value="1.45">
-            </li>-->
-            
-          </ul>
-            </div>
+          <div id="audio-box">
+            <h3> Audio Click </h3>
+            <ul id="opt opt-audio">
+              <li>
+                <label> Instrument
+                  <select id="instrument">
+                    <option name="piano" value="piano"> Piano </option>
+                    <option name="glockenspiel" value="glockenspiel"> Glockenspiel </option>
+                    <option name="gong" value="gong" selected="true"> Gong </option>
+                    <option name="marimba" value="marimba"> Marimba </option>
+                  </select>
+                </label>
+              </li>
+              <li>
+                <label> Freq </label>
+                <input type="text" id="freq" value="450"> </li>
+              <li>
+                <label> Attack </label>
+                <input type="text" id="attack" value=".01"> </li>
+              <li>
+                <label> Decay </label>
+                <input type="text" id="decay" value=".6"> </li>
+              <li>
+                <label> CmRatio </label>
+                <input type="text" id="cm" value="4"> </li>
+              <li>
+                <label> Index </label>
+                <input type="text" id="indexV" value="1.45"> </li>
+            </ul>
+          </div>
         </div>
         <div id="structure">
           <h3> Structure Gen </h3>
-              <select id="shape">
-                <option> flyer </option>
-                <option> blinker </option>
-              </select>
+          <select id="shape">
+            <option> flyer </option>
+            <option> blinker </option>
+          </select>
           <p> Works best in "Conway" mode (change in render settings)</p>
         </div>
       </div>
     </div>
-
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>

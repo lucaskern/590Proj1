@@ -12,4 +12,5 @@ $( function() {
     $("#info-toggle").click(function() {
       $("#info-box").slideToggle( "slow", function() {});
     });
+
   } );
