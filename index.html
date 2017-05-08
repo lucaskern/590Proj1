@@ -10,24 +10,29 @@
       overflow: hidden;
     }
     
+    body > canvas:nth-child(7) {
+      position: absolute;
+      top: 0px;
+    }
+
     canvas {
       padding: 0;
       margin: 10px auto auto auto;
       display: none;
       border: 2px solid black;
     }
-    
+
     .controls {
       margin: 0 auto;
       /*position: absolute;
       left: 0px;
       bottom: 0px;*/
     }
-    
+
     .controls ul {
       list-style: none;
     }
-    
+
     #tabs {
       width: 800px;
       margin-left: -400px;
@@ -35,11 +40,11 @@
       bottom: 0px;
       left: 50%;
     }
-    
+
     #tabs button {
       text-align: center;
     }
-    
+
     label {
       width: 14%;
       color: black;
@@ -47,15 +52,15 @@
       font-weight: 700;
       margin: 10px 0px 20px 10px;
     }
-    
+
     input {
       width: 100px;
     }
-    
+
     .ui-tabs-anchor {
       font-size: 12px;
     }
-    
+
     #info-toggle,
     #controls-toggle {
       background: rgba(0, 0, 0, 0.4);
@@ -63,11 +68,11 @@
       position: absolute;
       bottom: 0px;
     }
-    
+
     #controls-toggle {
       left: 120px;
     }
-    
+
     #info-box {
       background-color: white;
       padding: 10px;
@@ -79,11 +84,11 @@
       left: 50%;
       font-family: sans-serif;
     }
-    
+
     #structure {
       display: none;
     }
-    
+
     h2 {
       text-align: center;
     }
@@ -137,7 +142,7 @@
             </label>
           </li>
           <li>
-            <label> Sound 
+            <label> Sound
             <select id="mute">
                 <option value="mute"> Mute </option>
                 <option> Play Audio </option>
@@ -294,6 +299,7 @@
   </div>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"></script>
   <script src="bundle.js" type="text/javascript"></script>
   <!--<script src='main.js'></script>
   <script src='loader.js'></script>-->
