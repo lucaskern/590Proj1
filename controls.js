@@ -1,7 +1,7 @@
 $( function() {
     $( "#tabs" ).tabs();
 
-    $( "canvas" ).fadeIn( 1000, function() {});
+    //$( "canvas" ).fadeIn( 1000, function() {});
 
     $("#controls-toggle").click(function() {
         $("#tabs").slideToggle( "slow", function() {});

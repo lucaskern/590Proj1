@@ -2,7 +2,7 @@
 $( function() {
     $( "#tabs" ).tabs();
 
-    $( "canvas" ).fadeIn( 1000, function() {});
+    //$( "canvas" ).fadeIn( 1000, function() {});
 
     $("#controls-toggle").click(function() {
         $("#tabs").slideToggle( "slow", function() {});
@@ -89,6 +89,7 @@ const app = {
         this.renderer = new THREE.WebGLRenderer();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this.renderer.domElement);
+        this.renderer.domElement.id = 'threeCan';
 
         this.scene = new THREE.Scene();
 
