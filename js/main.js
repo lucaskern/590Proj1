@@ -39,9 +39,14 @@ const app = {
   xSpeed: 0.02,
   ySpeed: 0.01,
   threeShape: 'cube',
+  cameraDist: 500,
   liveCount: 0, //create an audioCtx
   audCtx: undefined, // create an oscillator
   osc: undefined,
+  conv: undefined,
+  impulses: ['studio'],
+  soundFile: undefined,
+  source: undefined,
   init() {
     console.log("app.main.init() called");
     // initialize properties
@@ -50,18 +55,22 @@ const app = {
     //this.canvas.height = 512;
     this.ctx = this.canvas.getContext('2d');
 
+    //start 3d
     this.initThree();
 
     //set up controls
     this.controls();
-    console.log("init ran");
+
     this.audCtx = new AudioContext();
-    // create an oscillator
-    this.osc = this.audCtx.createOscillator();
-    // change waveform of oscillator
-    this.osc.type = 'sawtooth';
-    // start the oscillator running
-    this.osc.start();
+    
+    this.soundFile = document.querySelector('#audiofile');
+    this.source = this.audCtx.createMediaElementSource(this.soundFile);
+    this.conv = this.audCtx.createConvolver();
+  
+    this.source.connect(this.conv);
+    
+    this.conv.connect(this.audCtx.destination);
+    
     //set up grid on first init only
     if (this.firstRun) {
       this.gridSetup();
@@ -72,6 +81,28 @@ const app = {
     this.animate();
     this.update();
 
+    console.log("init ran");
+  },
+  loadImpulse( soundFileName ) {
+    let thisRef = this;
+    //console.log(soundFileName);
+    let req = new XMLHttpRequest()
+    req.open( 'GET', '../impulses/' + soundFileName + '.wav', true )
+    req.responseType = 'arraybuffer' 
+
+    //console.log(req);
+    
+    req.onload = function() {
+      let audioData = req.response
+      
+      console.log(audioData);
+      thisRef.audCtx.decodeAudioData( audioData,  buffer => {
+        thisRef.conv.buffer = buffer
+        thisRef.soundFile.play()
+      })
+    }
+
+    req.send()
   },
   initThree() {
 
@@ -84,12 +115,12 @@ const app = {
     this.scene = new THREE.Scene();
 
     this.camera = new THREE.PerspectiveCamera(70, this.threeWidth / this.threeHeight, 1, 1000);
-    this.camera.position.z = 500;
+    this.camera.position.z = this.cameraDist;
     this.scene.add(this.camera);
     this.texture = new THREE.Texture(this.canvas);
-    
+
     this.addGeometry();
-    
+
     this.canvas.width = this.canvas.height = this.size;
   },
   animate() {
@@ -97,6 +128,7 @@ const app = {
 
     this.update();
     this.texture.needsUpdate = true;
+    this.camera.position.z = this.cameraDist;
     this.mesh.rotation.y += this.ySpeed;
     this.mesh.rotation.x += this.xSpeed;
     this.renderer.render(this.scene, this.camera);
@@ -105,7 +137,7 @@ const app = {
     var material = new THREE.MeshBasicMaterial({
       map: this.texture
     });
-    
+
     switch (this.threeShape) {
       case 'cube':
         this.geometry = new THREE.BoxGeometry(300, 300, 300);
@@ -113,15 +145,20 @@ const app = {
       case 'torus':
         this.geometry = new THREE.TorusGeometry(200, 100, 20, 100);
         break;
+      case 'cylinder':
+        this.geometry = new THREE.CylinderGeometry(150, 150, 100, 32);
+        break;
+      case 'torusKnot':
+        this.geometry = new THREE.TorusKnotGeometry(150, 30, 100, 16);
+        break;
     }
-    
+
     this.mesh = new THREE.Mesh(this.geometry, material);
     this.scene.add(this.mesh);
   },
   deleteSceneObjs() {
-    while(this.scene.children.length > 0)
-    { 
-      this.scene.remove(this.scene.children[0]); 
+    while (this.scene.children.length > 0) {
+      this.scene.remove(this.scene.children[0]);
     }
   },
   //create grid using default or user modified values
@@ -304,6 +341,11 @@ const app = {
       document.querySelector("#ySpeedVal").value = e.target.value;
     };
 
+    document.querySelector("#cameraD").onchange = function (e) {
+      thisRef.cameraDist = e.target.value;
+      document.querySelector("#cameraDVal").value = e.target.value;
+    };
+
     document.querySelector("#threeShape").onchange = function (e) {
       thisRef.deleteSceneObjs();
       thisRef.threeShape = e.target.value;
@@ -367,7 +409,7 @@ const app = {
           if (this.grid[y][x][1] >= this.maxAge) {
             this.temp[y][x][0] = 0;
             this.temp[y][x][1] = 0;
-            this.playNote(x * 5, 1, 1.411, 1.7, 1);
+            this.loadImpulse(this.impulses[0]);
           }
         } else if (this.grid[y][x][0] == 0) {
           if (this.liveCount == 3) {
@@ -491,7 +533,7 @@ const app = {
   forward() {
     this.draw();
   },
-  playNote(frequency, attack, decay, cmRatio, index) {
+  /*playNote(frequency, attack, decay, cmRatio, index) {
     //let audCtx = new AudioContext();
     // create our primary oscillator
     const carrier = this.audCtx.createOscillator();
@@ -524,7 +566,7 @@ const app = {
     mod.stop(this.audCtx.currentTime + attack + decay);
     carrier.stop(this.audCtx.currentTime + attack + decay);
     //this.osc.close();
-  },
+  },*/
   update() {
     //this.animationID = requestAnimationFrame(this.update.bind(this));
     //this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

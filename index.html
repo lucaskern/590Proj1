@@ -265,10 +265,18 @@
             </label>
           </li>
           <li>
+            <label> Camera Distance:
+              <input id="cameraD" name="cameraD" type="range" value="500" min="100" max="1000">
+              <output name="cameraDVal" id="cameraDVal">500</output>
+            </label>
+          </li>
+          <li>
             <label> Geometry Shape
               <select id="threeShape">
                 <option name="cube" value="cube"> Cube </option>
                 <option name="torus" value="torus"> Torus </option>
+                <option name="torusKnot" value="torusKnot"> Torus Knot </option>
+                <option name="cylinder" value="cylinder"> Cylinder </option>
               </select>
             </label>
           </li>
@@ -276,6 +284,7 @@
       </div>
     </div>
   </div>
+  <audio id='audiofile' src='./gong.wav'></audio>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
   <script src="http://cdnjs.cloudflare.com/ajax/libs/three.js/r68/three.min.js"></script>
