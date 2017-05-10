@@ -126,7 +126,7 @@
         <li><a href="#tabs-2">Color Options</a></li>
         <li><a href="#tabs-3">Grid Options</a></li>
         <li><a href="#tabs-4">Cell Options</a></li>
-        <li><a href="#tabs-5">Click Options</a></li>
+        <li><a href="#tabs-5">3D Options</a></li>
       </ul>
       <div id="tabs-1">
         <ul id="opt opt-render">
@@ -251,52 +251,28 @@
         </ul>
       </div>
       <div id="tabs-5">
-        <div>
-          <label> Click Effect
-            <select id="clickMode">
-              <option name="audio" value="audio"> Audio </option>
-              <option name="struct" value="struct"> Structure </option>
-            </select>
-          </label>
-          <div id="audio-box">
-            <h3> Audio Click </h3>
-            <ul id="opt opt-audio">
-              <li>
-                <label> Instrument
-                  <select id="instrument">
-                    <option name="piano" value="piano"> Piano </option>
-                    <option name="glockenspiel" value="glockenspiel"> Glockenspiel </option>
-                    <option name="gong" value="gong" selected="true"> Gong </option>
-                    <option name="marimba" value="marimba"> Marimba </option>
-                  </select>
-                </label>
-              </li>
-              <li>
-                <label> Freq </label>
-                <input type="text" id="freq" value="450"> </li>
-              <li>
-                <label> Attack </label>
-                <input type="text" id="attack" value=".01"> </li>
-              <li>
-                <label> Decay </label>
-                <input type="text" id="decay" value=".6"> </li>
-              <li>
-                <label> CmRatio </label>
-                <input type="text" id="cm" value="4"> </li>
-              <li>
-                <label> Index </label>
-                <input type="text" id="indexV" value="1.45"> </li>
-            </ul>
-          </div>
-        </div>
-        <div id="structure">
-          <h3> Structure Gen </h3>
-          <select id="shape">
-            <option> flyer </option>
-            <option> blinker </option>
-          </select>
-          <p> Works best in "Conway" mode (change in render settings)</p>
-        </div>
+        <ul id="opt opt-grid">
+          <li>
+            <label> X-Spin Speed:
+              <input id="xSpeed" name="xSpeed" type="range" value="20.0" min="0.0" max="25.0">
+              <output name="xSpeedVal" id="xSpeedVal">20</output>
+            </label>
+          </li>
+          <li>
+            <label> Y-Spin Speed:
+              <input id="ySpeed" name="ySpeed" type="range" value="20.0" min="0.0" max="25.0">
+              <output name="ySpeedVal" id="ySpeedVal">20</output>
+            </label>
+          </li>
+          <li>
+            <label> Geometry Shape
+              <select id="threeShape">
+                <option name="cube" value="cube"> Cube </option>
+                <option name="torus" value="torus"> Torus </option>
+              </select>
+            </label>
+          </li>
+        </ul>
       </div>
     </div>
   </div>
