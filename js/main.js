@@ -25,9 +25,7 @@ const app = {
   slowCount: 0,
   border: true,
   lineW: 1,
-  instrument: 'gong',
   sound: false,
-  shape: 'flyer', //live neighbor count
   camera: undefined,
   scene: undefined,
   renderer: undefined,
@@ -42,9 +40,8 @@ const app = {
   cameraDist: 500,
   liveCount: 0, //create an audioCtx
   audCtx: undefined, // create an oscillator
-  osc: undefined,
   conv: undefined,
-  impulses: ['studio'],
+  impulses: ['largeDarkPlate'],
   soundFile: undefined,
   source: undefined,
   init() {
@@ -61,14 +58,18 @@ const app = {
     //set up controls
     this.controls();
 
+    //create audio context
     this.audCtx = new AudioContext();
     
+    //create media element from audio element in index
     this.soundFile = document.querySelector('#audiofile');
     this.source = this.audCtx.createMediaElementSource(this.soundFile);
+    
+    //add convolver filter for reverb
     this.conv = this.audCtx.createConvolver();
   
+    //connect them together
     this.source.connect(this.conv);
-    
     this.conv.connect(this.audCtx.destination);
     
     //set up grid on first init only
@@ -85,20 +86,29 @@ const app = {
   },
   loadImpulse( soundFileName ) {
     let thisRef = this;
-    //console.log(soundFileName);
     let req = new XMLHttpRequest()
     req.open( 'GET', '../impulses/' + soundFileName + '.wav', true )
     req.responseType = 'arraybuffer' 
-
-    //console.log(req);
     
     req.onload = function() {
       let audioData = req.response
       
-      console.log(audioData);
       thisRef.audCtx.decodeAudioData( audioData,  buffer => {
         thisRef.conv.buffer = buffer
-        thisRef.soundFile.play()
+        //thisRef.soundFile.play();
+        var clone = thisRef.soundFile.cloneNode();
+        
+        thisRef.source = thisRef.audCtx.createMediaElementSource(clone);
+    
+        //add convolver filter for reverb
+        //thisRef.conv = thisRef.audCtx.createConvolver();
+  
+        //connect them together
+        thisRef.source.connect(thisRef.conv);
+        //thisRef.conv.connect(thisRef.audCtx.destination);
+        
+        
+        clone.play();
       })
     }
 
@@ -189,64 +199,8 @@ const app = {
       }
     }
   },
-  getMousePos(canvas, evt) {
-    var rect = this.canvas.getBoundingClientRect();
-    return {
-      x: Math.floor((evt.clientX - rect.left) / this.cellSize),
-      y: Math.floor((evt.clientY - rect.top) / this.cellSize)
-    };
-  },
-  clickEffect(xCoord, yCoord) {
-    //this.playNote(50 * x, .1, 1, 3 / 2, 1.5);
-    if (this.audioClick) {
-      let freqVal = parseFloat(document.getElementById("freq").value);
-      let attackVal = parseFloat(document.getElementById("attack").value);
-      let decayVal = parseFloat(document.getElementById("decay").value);
-      let cmVal = parseFloat(document.getElementById("cm").value);
-      let indexVal = parseFloat(document.getElementById("indexV").value);
-      this.grid[yCoord][xCoord][3] = 1;
-      this.grid[yCoord][xCoord][4] = freqVal;
-      this.grid[yCoord][xCoord][5] = attackVal;
-      this.grid[yCoord][xCoord][6] = decayVal;
-      this.grid[yCoord][xCoord][7] = cmVal;
-      this.grid[yCoord][xCoord][8] = indexVal;
-    } else {
-      switch (this.shape) {
-        case 'flyer':
-          //this.grid[yCoord][xCoord][0] = 1;
-          //this.grid[yCoord][xCoord][0] = 0;
-          //this.grid[yCoord - 1][xCoord - 1][0] == 1
-          this.grid[yCoord - 1][xCoord][0] = 1
-          //this.grid[yCoord - 1][xCoord + 1][0] == 1
-          //this.grid[yCoord][xCoord - 1][0] == 1
-          this.grid[yCoord][xCoord + 1][0] = 1
-          this.grid[yCoord + 1][xCoord - 1][0] = 1
-          this.grid[yCoord + 1][xCoord][0] = 1
-          this.grid[yCoord + 1][xCoord + 1][0] = 1
-          break;
-        case 'blinker':
-          this.grid[yCoord][xCoord][0] = 1;
-          //this.grid[yCoord - 1][xCoord - 1][0] == 1
-          this.grid[yCoord - 1][xCoord][0] = 1
-          //this.grid[yCoord - 1][xCoord + 1][0] == 1
-          //this.grid[yCoord][xCoord - 1][0] == 1
-          //this.grid[yCoord][xCoord + 1][0] = 1
-          //this.grid[yCoord + 1][xCoord - 1][0] = 1
-          this.grid[yCoord + 1][xCoord][0] = 1
-          //this.grid[yCoord + 1][xCoord + 1][0] = 1
-          break;
-      }
-    }
-    console.log(xCoord + "," + yCoord);
-  }, //set up value controllers
   controls() {
     let thisRef = this;
-    document.querySelector("canvas").addEventListener('click', function (evt) {
-      var mousePos = thisRef.getMousePos(this.canvas, evt);
-      var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-      //console.log(message);
-      thisRef.clickEffect(mousePos.x, mousePos.y);
-    }, false);
     //Constant controls
     document.querySelector("#play").onclick = function (e) {
       thisRef.play();
@@ -409,7 +363,9 @@ const app = {
           if (this.grid[y][x][1] >= this.maxAge) {
             this.temp[y][x][0] = 0;
             this.temp[y][x][1] = 0;
-            this.loadImpulse(this.impulses[0]);
+            if (this.sound) {
+              this.loadImpulse(this.impulses[0]);
+            }
           }
         } else if (this.grid[y][x][0] == 0) {
           if (this.liveCount == 3) {
@@ -533,40 +489,6 @@ const app = {
   forward() {
     this.draw();
   },
-  /*playNote(frequency, attack, decay, cmRatio, index) {
-    //let audCtx = new AudioContext();
-    // create our primary oscillator
-    const carrier = this.audCtx.createOscillator();
-    carrier.type = 'sine';
-    carrier.frequency.value = frequency;
-    // create an oscillator for modulation
-    const mod = this.audCtx.createOscillator();
-    mod.type = 'sine';
-    //create convolver for reverb
-    let convolver = this.audCtx.createConvolver();
-    // The FM synthesis formula states that our modulators
-    // frequency = frequency * carrier-to-modulation ratio.
-    mod.frequency.value = frequency * cmRatio;
-    const modGainNode = this.audCtx.createGain();
-    // The FM synthesis formula states that our modulators
-    // amplitude = frequency * index
-    modGainNode.gain.value = frequency * index;
-    mod.connect(modGainNode);
-    // plug the gain node into the frequency of
-    // our oscillator
-    modGainNode.connect(carrier.frequency);
-    //modGainNode.connect(convolver);
-    const envelope = this.audCtx.createGain();
-    envelope.gain.linearRampToValueAtTime(1, this.audCtx.currentTime + attack);
-    envelope.gain.linearRampToValueAtTime(0, this.audCtx.currentTime + attack + decay);
-    carrier.connect(envelope);
-    envelope.connect(this.audCtx.destination);
-    mod.start(this.audCtx.currentTime);
-    carrier.start(this.audCtx.currentTime);
-    mod.stop(this.audCtx.currentTime + attack + decay);
-    carrier.stop(this.audCtx.currentTime + attack + decay);
-    //this.osc.close();
-  },*/
   update() {
     //this.animationID = requestAnimationFrame(this.update.bind(this));
     //this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
