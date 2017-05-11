@@ -144,9 +144,12 @@ const app = {
     this.renderer.render(this.scene, this.camera);
   },
   addGeometry() {
+    
     var material = new THREE.MeshBasicMaterial({
       map: this.texture
     });
+    
+    material.light = true;
 
     switch (this.threeShape) {
       case 'cube':
@@ -164,6 +167,7 @@ const app = {
     }
 
     this.mesh = new THREE.Mesh(this.geometry, material);
+    this.mesh.position.set(0, 0 , 0);
     this.scene.add(this.mesh);
   },
   deleteSceneObjs() {
